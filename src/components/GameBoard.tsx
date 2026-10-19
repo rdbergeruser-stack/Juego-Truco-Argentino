@@ -568,9 +568,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   };
 
   return (
-    <div className="relative min-h-screen bg-stone-950 flex flex-col justify-between p-3 md:p-6 text-slate-100 select-none overflow-x-hidden">
+    <div className="relative min-h-[100dvh] bg-stone-950 flex flex-col justify-between p-2 sm:p-3 md:p-6 text-slate-100 select-none overflow-x-hidden">
       {/* Barra Superior de Control y Tanteador */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 max-w-6xl mx-auto w-full">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4 max-w-6xl mx-auto w-full">
         {/* Tanteador Criollo */}
         <ScoreBoard
           playerScore={playerScore}
@@ -582,21 +582,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         />
 
         {/* Botones de acción rápida y configuración */}
-        <div className="flex flex-wrap items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full md:w-auto">
           <button
             onClick={onOpenTutorial}
-            className="px-3 py-2 bg-stone-900 hover:bg-stone-800 text-amber-300 border border-amber-600/50 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition"
+            className="flex-1 md:flex-none px-2.5 sm:px-3 py-1.5 sm:py-2 bg-stone-900 hover:bg-stone-800 text-amber-300 border border-amber-600/50 rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shadow transition touch-manipulation active:scale-95"
           >
-            <GraduationCap className="w-4 h-4 text-amber-400" />
-            <span>Escuela de Truco</span>
+            <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+            <span>Escuela</span>
           </button>
 
           <button
             onClick={onOpenHierarchy}
-            className="px-3 py-2 bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition"
+            className="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-xl text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow transition touch-manipulation active:scale-95"
           >
-            <HelpCircle className="w-4 h-4 text-amber-400" />
-            <span>Jerarquía</span>
+            <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+            <span className="hidden xs:inline">Jerarquía</span>
           </button>
 
           <button
@@ -605,7 +605,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               sound.enabled = newSound;
               onUpdateSettings({ soundEnabled: newSound });
             }}
-            className="p-2 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-xl transition"
+            className="p-1.5 sm:p-2 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-xl transition touch-manipulation active:scale-95"
             title={settings.soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
           >
             {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-stone-500" />}
@@ -613,7 +613,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
           <button
             onClick={restartMatch}
-            className="p-2 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-xl transition"
+            className="p-1.5 sm:p-2 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-xl transition touch-manipulation active:scale-95"
             title="Reiniciar partida desde cero"
           >
             <RotateCcw className="w-4 h-4 text-amber-400" />
@@ -622,7 +622,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       </div>
 
       {/* MESA DE TRUCO (Paño verde tradicional) */}
-      <div className="my-4 max-w-5xl mx-auto w-full flex-1 rounded-3xl bg-gradient-to-b from-emerald-900 via-emerald-950 to-green-950 border-4 border-amber-900/60 shadow-2xl p-4 md:p-8 flex flex-col justify-between relative overflow-hidden">
+      <div className="my-2 sm:my-4 max-w-5xl mx-auto w-full flex-1 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-900 via-emerald-950 to-green-950 border-2 sm:border-4 border-amber-900/60 shadow-2xl p-2.5 sm:p-4 md:p-8 flex flex-col justify-between relative overflow-hidden">
         {/* Textura de paño sutil */}
         <div
           className="absolute inset-0 opacity-15 pointer-events-none"
@@ -634,32 +634,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         {/* Cartel Flotante Central de Avisos */}
         {centerBanner && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-stone-950/90 text-amber-300 border-2 border-amber-500 px-6 py-3 rounded-2xl font-serif font-black text-sm md:text-lg shadow-2xl backdrop-blur-md animate-fade-in text-center max-w-md pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 bg-stone-950/95 text-amber-300 border-2 border-amber-500 px-4 sm:px-6 py-2 sm:py-3 rounded-2xl font-serif font-black text-xs sm:text-base md:text-lg shadow-2xl backdrop-blur-md animate-fade-in text-center max-w-[85vw] sm:max-w-md pointer-events-none">
             {centerBanner}
           </div>
         )}
 
         {/* ZONA OPONENTE (PC) */}
         <div className="relative z-10 flex flex-col items-center">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="relative">
-              <div className="w-12 h-12 rounded-2xl bg-stone-900 border-2 border-amber-600/70 flex items-center justify-center text-2xl shadow-lg">
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-900 border-2 border-amber-600/70 flex items-center justify-center text-xl sm:text-2xl shadow-lg">
                 {diffLabels[settings.difficulty].avatar}
               </div>
               {handMano === 'opponent' && (
-                <span className="absolute -bottom-1 -right-1 bg-amber-500 text-stone-950 text-[9px] font-black px-1 rounded-full shadow">
+                <span className="absolute -bottom-1 -right-1 bg-amber-500 text-stone-950 text-[8px] sm:text-[9px] font-black px-1 rounded-full shadow">
                   MANO
                 </span>
               )}
             </div>
 
             <div>
-              <span className="font-serif font-bold text-sm text-stone-200">
+              <span className="font-serif font-bold text-xs sm:text-sm text-stone-200">
                 {diffLabels[settings.difficulty].name}
               </span>
-              <div className="flex items-center gap-1.5 mt-0.5">
-                <span className="text-[10px] text-stone-400">
-                  {opponentHand.length} cartas en mano
+              <div className="flex items-center gap-1 mt-0.5">
+                <span className="text-[9px] sm:text-[10px] text-stone-400">
+                  {opponentHand.length} cartas
                 </span>
                 {currentTurn === 'opponent' && !handEnded && (
                   <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -669,14 +669,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
             {/* Globo de Diálogo de la PC */}
             {opponentBubble && (
-              <div className="ml-2 bg-stone-900 text-amber-300 border-2 border-amber-500/80 px-4 py-2 rounded-2xl rounded-bl-none font-serif font-bold text-xs md:text-sm shadow-xl animate-fade-in max-w-xs">
+              <div className="ml-1 sm:ml-2 bg-stone-900 text-amber-300 border border-amber-500/80 px-2.5 sm:px-4 py-1 sm:py-2 rounded-2xl rounded-bl-none font-serif font-bold text-[11px] sm:text-sm shadow-xl animate-fade-in max-w-[140px] sm:max-w-xs">
                 &ldquo;{opponentBubble}&rdquo;
               </div>
             )}
           </div>
 
           {/* Cartas de la PC (Boca abajo) */}
-          <div className="flex gap-2 mt-3">
+          <div className="flex gap-1.5 sm:gap-2 mt-2">
             {opponentHand.map((_, idx) => (
               <CardView key={`opp-${idx}`} faceDown={true} size="sm" />
             ))}
@@ -684,7 +684,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
 
         {/* CENTRO DE LA MESA: CARTAS TIRADAS POR RONDA (1, 2, 3) */}
-        <div className="relative z-10 my-4 flex items-center justify-center gap-4 md:gap-8 min-h-[160px]">
+        <div className="relative z-10 my-2 sm:my-4 flex items-center justify-center gap-1.5 xs:gap-3 sm:gap-6 md:gap-8 min-h-[130px] sm:min-h-[160px]">
           {[1, 2, 3].map(roundNum => {
             const trick = tableTricks.find(t => t.round === roundNum);
             const isCurrent = currentRound === roundNum;
@@ -694,32 +694,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return (
               <div
                 key={roundNum}
-                className={`flex flex-col items-center p-2 rounded-2xl border transition-all ${
+                className={`flex flex-col items-center p-1 sm:p-2 rounded-xl sm:rounded-2xl border transition-all ${
                   isCurrent
                     ? 'bg-emerald-950/40 border-amber-500/50 shadow-lg ring-1 ring-amber-500/30'
                     : 'bg-emerald-950/20 border-emerald-800/30 opacity-80'
                 }`}
               >
-                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-300/80 mb-1">
-                  {roundNum === 1 ? '1ra Mano' : roundNum === 2 ? '2da Mano' : '3ra Mano'}
+                <span className="text-[8px] sm:text-[10px] font-mono font-bold uppercase tracking-wider text-amber-300/80 mb-0.5 sm:mb-1">
+                  {roundNum === 1 ? '1ra' : roundNum === 2 ? '2da' : '3ra'}
                 </span>
 
-                <div className="flex flex-col gap-2 items-center">
+                <div className="flex flex-col gap-1 sm:gap-2 items-center">
                   {/* Carta del rival */}
-                  <div className="w-16 h-24 flex items-center justify-center border border-dashed border-emerald-700/50 rounded-xl bg-black/10">
-                    {oCard ? <CardView card={oCard} size="sm" /> : <span className="text-[10px] text-emerald-600">Rival</span>}
+                  <div className="w-11 h-16 sm:w-16 sm:h-24 flex items-center justify-center border border-dashed border-emerald-700/50 rounded-lg sm:rounded-xl bg-black/10">
+                    {oCard ? <CardView card={oCard} size="sm" /> : <span className="text-[8px] sm:text-[10px] text-emerald-600">Rival</span>}
                   </div>
 
                   {/* Carta del jugador */}
-                  <div className="w-16 h-24 flex items-center justify-center border border-dashed border-emerald-700/50 rounded-xl bg-black/10">
-                    {pCard ? <CardView card={pCard} size="sm" /> : <span className="text-[10px] text-emerald-600">Vos</span>}
+                  <div className="w-11 h-16 sm:w-16 sm:h-24 flex items-center justify-center border border-dashed border-emerald-700/50 rounded-lg sm:rounded-xl bg-black/10">
+                    {pCard ? <CardView card={pCard} size="sm" /> : <span className="text-[8px] sm:text-[10px] text-emerald-600">Vos</span>}
                   </div>
                 </div>
 
                 {/* Resultado de la ronda */}
                 {trick && (
                   <span
-                    className={`mt-1 text-[10px] font-black px-1.5 py-0.5 rounded shadow ${
+                    className={`mt-1 text-[8px] sm:text-[10px] font-black px-1 sm:px-1.5 py-0.2 rounded shadow ${
                       trick.winner === 'player'
                         ? 'bg-amber-500 text-stone-950'
                         : trick.winner === 'opponent'
@@ -739,19 +739,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         <div className="relative z-10 flex flex-col items-center">
           {/* Globo de Diálogo del Jugador */}
           {playerBubble && (
-            <div className="mb-2 bg-amber-500 text-stone-950 font-serif font-black px-4 py-2 rounded-2xl rounded-br-none text-xs md:text-sm shadow-xl animate-fade-in">
+            <div className="mb-1.5 sm:mb-2 bg-amber-500 text-stone-950 font-serif font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl rounded-br-none text-xs sm:text-sm shadow-xl animate-fade-in">
               {playerBubble}
             </div>
           )}
 
           {/* Cartas del Jugador */}
-          <div className="flex gap-3 md:gap-4 items-end">
+          <div className="flex gap-1.5 xs:gap-3 sm:gap-4 items-end justify-center">
             {playerHand.map(card => {
               const isSelected = selectedCardId === card.id;
               const canPlay = currentTurn === 'player' && !pendingCall && !handEnded;
 
               return (
-                <div key={card.id} className="relative">
+                <div key={card.id} className="relative touch-manipulation">
                   <CardView
                     card={card}
                     selected={isSelected}
@@ -766,7 +766,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                   {canPlay && (
                     <button
                       onClick={() => handlePlayerPlayCard(card)}
-                      className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[10px] px-2 py-0.5 rounded-full shadow transition"
+                      className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full shadow transition touch-manipulation active:scale-95 z-20"
                     >
                       TIRAR
                     </button>
@@ -776,38 +776,38 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             })}
           </div>
 
-          <div className="flex items-center gap-2 mt-4 text-xs text-amber-200/80">
+          <div className="flex items-center gap-1.5 mt-2.5 sm:mt-3 text-[10px] sm:text-xs text-amber-200/80">
             {handMano === 'player' && (
-              <span className="bg-amber-500 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow">
+              <span className="bg-amber-500 text-stone-950 text-[9px] sm:text-[10px] font-black px-1.5 py-0.2 rounded-full shadow">
                 SOS MANO ✋
               </span>
             )}
             <span>
-              Tus tantos de envido: <strong className="text-white">{playerEnvidoCalc.score}</strong> ({playerEnvidoCalc.explanation})
+              Envido: <strong className="text-white">{playerEnvidoCalc.score}</strong> ({playerEnvidoCalc.explanation})
             </span>
           </div>
         </div>
       </div>
 
       {/* PANEL DE ACCIONES Y CANTOS */}
-      <div className="max-w-4xl mx-auto w-full bg-stone-900/90 border-2 border-stone-800 rounded-2xl p-3 shadow-xl backdrop-blur-md">
+      <div className="max-w-4xl mx-auto w-full bg-stone-900/95 border border-stone-800 rounded-2xl p-2 sm:p-3 shadow-xl backdrop-blur-md">
         {/* Caso 1: Hay un canto pendiente para responder */}
         {pendingCall && currentTurn === 'player' ? (
-          <div className="flex flex-col items-center gap-2">
-            <span className="text-xs text-amber-300 font-bold flex items-center gap-1.5 animate-pulse">
-              <ShieldAlert className="w-4 h-4 text-amber-400" />
+          <div className="flex flex-col items-center gap-1.5 sm:gap-2">
+            <span className="text-[11px] sm:text-xs text-amber-300 font-bold flex items-center gap-1 animate-pulse">
+              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
               ¡El rival cantó {pendingCall.toUpperCase()}! ¿Qué respondés?
             </span>
-            <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 w-full">
               <button
                 onClick={() => handlePlayerResponse(true)}
-                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-sm shadow-lg transition transform hover:scale-105"
+                className="flex-1 sm:flex-none min-h-[42px] px-4 sm:px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs sm:text-sm shadow-lg transition active:scale-95 touch-manipulation"
               >
                 ¡QUIERO! 👍
               </button>
               <button
                 onClick={() => handlePlayerResponse(false)}
-                className="px-5 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold rounded-xl text-sm border border-stone-700 transition"
+                className="flex-1 sm:flex-none min-h-[42px] px-4 sm:px-6 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold rounded-xl text-xs sm:text-sm border border-stone-700 transition active:scale-95 touch-manipulation"
               >
                 NO QUIERO 👎
               </button>
@@ -816,7 +816,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               {pendingCall === 'truco' && (
                 <button
                   onClick={() => handlePlayerChant('retruco')}
-                  className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-sm shadow transition"
+                  className="w-full sm:w-auto min-h-[42px] px-4 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
                 >
                   ¡QUIERO RETRUCO! 🔥
                 </button>
@@ -824,7 +824,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               {pendingCall === 'retruco' && (
                 <button
                   onClick={() => handlePlayerChant('vale_cuatro')}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-sm shadow transition"
+                  className="w-full sm:w-auto min-h-[42px] px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
                 >
                   ¡QUIERO VALE CUATRO! ⚡
                 </button>
@@ -835,13 +835,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <>
                   <button
                     onClick={() => handlePlayerChant('real_envido')}
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-sm shadow transition"
+                    className="flex-1 sm:flex-none min-h-[40px] px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
                   >
                     REAL ENVIDO
                   </button>
                   <button
                     onClick={() => handlePlayerChant('falta_envido')}
-                    className="px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white font-black rounded-xl text-sm shadow transition"
+                    className="flex-1 sm:flex-none min-h-[40px] px-3.5 py-1.5 bg-purple-700 hover:bg-purple-600 text-white font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
                   >
                     FALTA ENVIDO
                   </button>
@@ -851,16 +851,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           </div>
         ) : (
           /* Caso 2: Controles normales del jugador */
-          <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
             {/* Cantos de Envido y Flor */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
               {!envidoDone && currentRound === 1 && trucoLevel === 'none' && (
                 <>
                   {settings.withFlor && hasFlor(playerHand) && (
                     <button
                       onClick={handlePlayerFlor}
                       disabled={currentTurn !== 'player'}
-                      className="px-3 py-1.5 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-black rounded-xl text-xs shadow hover:from-pink-500 hover:to-purple-500 transition disabled:opacity-40"
+                      className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-black rounded-xl text-[11px] sm:text-xs shadow hover:from-pink-500 hover:to-purple-500 transition disabled:opacity-40 active:scale-95 touch-manipulation"
                     >
                       🌸 ¡FLOR!
                     </button>
@@ -868,21 +868,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                   <button
                     onClick={() => handlePlayerChant('envido')}
                     disabled={currentTurn !== 'player'}
-                    className="px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-amber-100 font-bold rounded-xl text-xs shadow transition disabled:opacity-40"
+                    className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-amber-100 font-bold rounded-xl text-[11px] sm:text-xs shadow transition disabled:opacity-40 active:scale-95 touch-manipulation"
                   >
                     Envido
                   </button>
                   <button
                     onClick={() => handlePlayerChant('real_envido')}
                     disabled={currentTurn !== 'player'}
-                    className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-xl text-xs shadow transition disabled:opacity-40"
+                    className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-xl text-[11px] sm:text-xs shadow transition disabled:opacity-40 active:scale-95 touch-manipulation"
                   >
                     Real Envido
                   </button>
                   <button
                     onClick={() => handlePlayerChant('falta_envido')}
                     disabled={currentTurn !== 'player'}
-                    className="px-3 py-1.5 bg-purple-700 hover:bg-purple-600 text-white font-bold rounded-xl text-xs shadow transition disabled:opacity-40"
+                    className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-purple-700 hover:bg-purple-600 text-white font-bold rounded-xl text-[11px] sm:text-xs shadow transition disabled:opacity-40 active:scale-95 touch-manipulation"
                   >
                     Falta Envido
                   </button>
@@ -890,16 +890,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               )}
             </div>
 
-            {/* Cantos de Truco */}
-            <div className="flex items-center gap-1.5">
+            {/* Cantos de Truco y Mazo */}
+            <div className="flex items-center gap-1 sm:gap-1.5 ml-auto">
               {trucoLevel === 'none' && (
                 <button
                   onClick={() => handlePlayerChant('truco')}
                   disabled={currentTurn !== 'player'}
-                  className="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black rounded-xl text-xs shadow-lg transition transform hover:scale-105 disabled:opacity-40"
+                  className="min-h-[38px] sm:min-h-[42px] px-4 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black rounded-xl text-xs sm:text-sm shadow-lg transition active:scale-95 touch-manipulation disabled:opacity-40"
                 >
                   <span className="flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5" /> ¡TRUCO!
+                    <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> ¡TRUCO!
                   </span>
                 </button>
               )}
@@ -908,7 +908,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <button
                   onClick={() => handlePlayerChant('retruco')}
                   disabled={currentTurn !== 'player'}
-                  className="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs shadow transition disabled:opacity-40"
+                  className="min-h-[38px] px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs shadow transition active:scale-95 touch-manipulation disabled:opacity-40"
                 >
                   ¡RETRUCO!
                 </button>
@@ -918,7 +918,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <button
                   onClick={() => handlePlayerChant('vale_cuatro')}
                   disabled={currentTurn !== 'player'}
-                  className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs shadow transition disabled:opacity-40"
+                  className="min-h-[38px] px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs shadow transition active:scale-95 touch-manipulation disabled:opacity-40"
                 >
                   ¡VALE CUATRO!
                 </button>
@@ -928,9 +928,9 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               <button
                 onClick={handlePlayerFold}
                 disabled={handEnded}
-                className="px-3 py-1.5 bg-stone-800 hover:bg-red-950/60 hover:text-red-300 text-stone-400 border border-stone-700 rounded-xl text-xs font-semibold transition disabled:opacity-40"
+                className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-stone-800 hover:bg-red-950/60 hover:text-red-300 text-stone-400 border border-stone-700 rounded-xl text-[11px] sm:text-xs font-semibold transition disabled:opacity-40 active:scale-95 touch-manipulation"
               >
-                Irse al mazo
+                Al mazo
               </button>
             </div>
           </div>
