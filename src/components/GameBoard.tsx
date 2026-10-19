@@ -749,12 +749,19 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             {playerHand.map(card => {
               const isSelected = selectedCardId === card.id;
               const canPlay = currentTurn === 'player' && !pendingCall && !handEnded;
+              const isRecommended = settings.mentorEnabled && mentorAdvice.recommendedAction?.includes(card.name);
 
               return (
                 <div key={card.id} className="relative touch-manipulation">
+                  {isRecommended && canPlay && (
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 text-[7px] sm:text-[9px] font-black px-1.5 py-0.2 rounded-full shadow-lg border border-amber-200 whitespace-nowrap z-30 animate-pulse flex items-center gap-0.5">
+                      <span>🤠</span>
+                      <span>SUGERIDA</span>
+                    </span>
+                  )}
                   <CardView
                     card={card}
-                    selected={isSelected}
+                    selected={isSelected || (isRecommended && canPlay)}
                     disabled={!canPlay}
                     size="md"
                     onClick={() => {
@@ -766,7 +773,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                   {canPlay && (
                     <button
                       onClick={() => handlePlayerPlayCard(card)}
-                      className="absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full shadow transition touch-manipulation active:scale-95 z-20"
+                      className={`absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full shadow transition touch-manipulation active:scale-95 z-20 ${
+                        isRecommended
+                          ? 'bg-amber-400 hover:bg-amber-300 text-stone-950 ring-2 ring-amber-300'
+                          : 'bg-amber-500 hover:bg-amber-400 text-stone-950'
+                      }`}
                     >
                       TIRAR
                     </button>
