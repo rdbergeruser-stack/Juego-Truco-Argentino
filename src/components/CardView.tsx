@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import type { Card, Suit } from '../types/truco';
 import { CardCenterLayout, SuitSymbol } from './CardArt';
 
@@ -23,6 +23,8 @@ export const CardView: React.FC<CardViewProps> = ({
   showBadge = true,
   animatePlay = false,
 }) => {
+  const [imgLoadError, setImgLoadError] = useState(false);
+
   // Dimensiones responsivas con aspecto 1.55 (proporción clásica de naipe español)
   const sizeClasses = {
     sm: 'w-[3.2rem] h-[4.9rem] xs:w-14 xs:h-22 sm:w-16 sm:h-24 text-[10px] sm:text-xs',
@@ -150,44 +152,56 @@ export const CardView: React.FC<CardViewProps> = ({
       {getBravaBadge()}
 
       {/* Sombras en las 4 esquinas simulando manoseo y desgaste de campo */}
-      <div className="absolute top-0 left-0 w-3 h-3 bg-gradient-to-br from-[#8a5d33]/25 to-transparent rounded-tl-xl pointer-events-none" />
-      <div className="absolute top-0 right-0 w-3 h-3 bg-gradient-to-bl from-[#8a5d33]/25 to-transparent rounded-tr-xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-3 h-3 bg-gradient-to-tr from-[#8a5d33]/25 to-transparent rounded-bl-xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-3 h-3 bg-gradient-to-tl from-[#8a5d33]/25 to-transparent rounded-br-xl pointer-events-none" />
+      <div className="absolute top-0 left-0 w-3 h-3 bg-gradient-to-br from-[#8a5d33]/25 to-transparent rounded-tl-xl pointer-events-none z-20" />
+      <div className="absolute top-0 right-0 w-3 h-3 bg-gradient-to-bl from-[#8a5d33]/25 to-transparent rounded-tr-xl pointer-events-none z-20" />
+      <div className="absolute bottom-0 left-0 w-3 h-3 bg-gradient-to-tr from-[#8a5d33]/25 to-transparent rounded-bl-xl pointer-events-none z-20" />
+      <div className="absolute bottom-0 right-0 w-3 h-3 bg-gradient-to-tl from-[#8a5d33]/25 to-transparent rounded-br-xl pointer-events-none z-20" />
 
-      {/* MARCO INTERIOR CON "LA PINTA" TRADICIONAL DE LA BARAJA ESPAÑOLA */}
-      <div className="w-full h-full border border-[#8f7556]/60 rounded-lg flex flex-col justify-between p-1 relative overflow-hidden bg-transparent">
-        {/* Esquina Superior Izquierda: Número + Símbolo del palo */}
-        <div className="flex items-center gap-0.5 leading-none z-10">
-          <span
-            className="font-display font-black text-sm sm:text-lg tracking-tighter"
-            style={{ color: theme.text }}
-          >
-            {card.number}
-          </span>
-          <div className="scale-75 sm:scale-90 origin-left">
-            <SuitSymbol suit={card.suit} size={15} />
+      {/* RENDERIZADO: Si existe imagen PNG ilustrada real, se muestra la imagen completa con textura de campo */}
+      {!imgLoadError ? (
+        <div className="absolute inset-0 rounded-xl overflow-hidden flex items-center justify-center bg-[#f5ede0]">
+          <img
+            src={`/cards/${card.suit}_${card.number}.png`}
+            alt={card.name}
+            className="w-full h-full object-cover scale-[1.06] select-none pointer-events-none"
+            onError={() => setImgLoadError(true)}
+          />
+        </div>
+      ) : (
+        /* FALLBACK: Renderizado vectorial tradicional artesanal */
+        <div className="w-full h-full border border-[#8f7556]/60 rounded-lg flex flex-col justify-between p-1 relative overflow-hidden bg-transparent">
+          {/* Esquina Superior Izquierda: Número + Símbolo del palo */}
+          <div className="flex items-center gap-0.5 leading-none z-10">
+            <span
+              className="font-display font-black text-sm sm:text-lg tracking-tighter"
+              style={{ color: theme.text }}
+            >
+              {card.number}
+            </span>
+            <div className="scale-75 sm:scale-90 origin-left">
+              <SuitSymbol suit={card.suit} size={15} />
+            </div>
+          </div>
+
+          {/* CENTRO ARTÍSTICO DEL NAIPE (Basado fielmente en el patrón tradicional Fournier) */}
+          <div className="flex-1 flex items-center justify-center w-full my-0.5 relative z-10 overflow-hidden">
+            <CardCenterLayout number={card.number} suit={card.suit} />
+          </div>
+
+          {/* Esquina Inferior Derecha (Invertida): Número + Símbolo del palo */}
+          <div className="flex items-center gap-0.5 leading-none self-end rotate-180 z-10">
+            <span
+              className="font-display font-black text-sm sm:text-lg tracking-tighter"
+              style={{ color: theme.text }}
+            >
+              {card.number}
+            </span>
+            <div className="scale-75 sm:scale-90 origin-left">
+              <SuitSymbol suit={card.suit} size={15} />
+            </div>
           </div>
         </div>
-
-        {/* CENTRO ARTÍSTICO DEL NAIPE (Basado fielmente en el patrón tradicional Fournier) */}
-        <div className="flex-1 flex items-center justify-center w-full my-0.5 relative z-10 overflow-hidden">
-          <CardCenterLayout number={card.number} suit={card.suit} />
-        </div>
-
-        {/* Esquina Inferior Derecha (Invertida): Número + Símbolo del palo */}
-        <div className="flex items-center gap-0.5 leading-none self-end rotate-180 z-10">
-          <span
-            className="font-display font-black text-sm sm:text-lg tracking-tighter"
-            style={{ color: theme.text }}
-          >
-            {card.number}
-          </span>
-          <div className="scale-75 sm:scale-90 origin-left">
-            <SuitSymbol suit={card.suit} size={15} />
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
