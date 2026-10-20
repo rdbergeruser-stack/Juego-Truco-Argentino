@@ -745,3 +745,4 @@ export const GUIDED_SCENARIOS: GuidedScenario[] = [
     takeawayMessage: 'REGLA DE ORO: En el envido, "Mano canta y Mano gana". En empate de tantos, la Mano se lleva todos los puntos.',
   },
 ];
+

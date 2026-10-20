@@ -175,8 +175,20 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
           </div>
         </div>
 
-        {/* LA MESA VIRTUAL DEL DESAFÍO (Paño Verde) */}
-        <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-900 via-emerald-950 to-green-950 border-2 sm:border-3 border-amber-900/60 p-3 sm:p-6 shadow-xl space-y-4 relative overflow-hidden">
+        {/* LA MESA VIRTUAL DEL DESAFÍO (Paño Verde de Fieltro con Marco de Madera) */}
+        <div
+          className="rounded-2xl sm:rounded-3xl border-[5px] sm:border-[8px] border-[#291408] p-3 sm:p-6 shadow-2xl space-y-4 relative overflow-hidden ring-1 ring-amber-600/40"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 50%, #0d5435 0%, #063c26 55%, #022416 100%)',
+            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7), inset 0 0 40px rgba(0, 0, 0, 0.8)',
+          }}
+        >
+          {/* Remaches de bronce en esquinas */}
+          <div className="absolute top-1.5 left-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
+          <div className="absolute top-1.5 right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
+          <div className="absolute bottom-1.5 left-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
+          <div className="absolute bottom-1.5 right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
+
           {/* Historial o Ronda actual */}
           <div className="flex items-center justify-between text-[11px] text-amber-200/90 border-b border-emerald-800/40 pb-2">
             <div className="flex items-center gap-1.5 font-mono">

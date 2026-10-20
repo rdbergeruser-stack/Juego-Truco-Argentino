@@ -16,52 +16,58 @@ const MatchstickBox: React.FC<{ count: number }> = ({ count }) => {
   const c = Math.min(Math.max(count, 0), 5);
 
   return (
-    <div className="relative w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 border border-amber-900/20 rounded bg-amber-50/50 p-0.5 flex items-center justify-center shadow-inner shrink-0">
-      <svg viewBox="0 0 40 40" className="w-full h-full">
+    <div className="relative w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 border border-stone-700/80 rounded-lg bg-stone-900/90 p-0.5 flex items-center justify-center shadow-inner shrink-0">
+      <svg viewBox="0 0 40 40" className="w-full h-full filter drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)]">
         <defs>
-          <radialGradient id="matchHead" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ef4444" />
-            <stop offset="100%" stopColor="#991b1b" />
+          <radialGradient id="matchHead" cx="40%" cy="35%" r="65%">
+            <stop offset="0%" stopColor="#fca5a5" />
+            <stop offset="45%" stopColor="#ef4444" />
+            <stop offset="100%" stopColor="#7f1d1d" />
           </radialGradient>
+          <linearGradient id="matchWood" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#fef08a" />
+            <stop offset="50%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#b45309" />
+          </linearGradient>
         </defs>
 
         {/* Fósforo 1: Izquierda vertical */}
         {c >= 1 && (
           <g>
-            <line x1="8" y1="8" x2="8" y2="32" stroke="#d97706" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="8" cy="8" r="2.8" fill="url(#matchHead)" />
+            <line x1="8" y1="8" x2="8" y2="32" stroke="url(#matchWood)" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="8" cy="8" r="3" fill="url(#matchHead)" stroke="#450a0a" strokeWidth="0.8" />
           </g>
         )}
 
         {/* Fósforo 2: Superior horizontal */}
         {c >= 2 && (
           <g>
-            <line x1="8" y1="8" x2="32" y2="8" stroke="#d97706" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="32" cy="8" r="2.8" fill="url(#matchHead)" />
+            <line x1="8" y1="8" x2="32" y2="8" stroke="url(#matchWood)" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="32" cy="8" r="3" fill="url(#matchHead)" stroke="#450a0a" strokeWidth="0.8" />
           </g>
         )}
 
         {/* Fósforo 3: Derecha vertical */}
         {c >= 3 && (
           <g>
-            <line x1="32" y1="8" x2="32" y2="32" stroke="#d97706" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="32" cy="32" r="2.8" fill="url(#matchHead)" />
+            <line x1="32" y1="8" x2="32" y2="32" stroke="url(#matchWood)" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="32" cy="32" r="3" fill="url(#matchHead)" stroke="#450a0a" strokeWidth="0.8" />
           </g>
         )}
 
         {/* Fósforo 4: Inferior horizontal */}
         {c >= 4 && (
           <g>
-            <line x1="8" y1="32" x2="32" y2="32" stroke="#d97706" strokeWidth="3" strokeLinecap="round" />
-            <circle cx="8" cy="32" r="2.8" fill="url(#matchHead)" />
+            <line x1="8" y1="32" x2="32" y2="32" stroke="url(#matchWood)" strokeWidth="3" strokeLinecap="round" />
+            <circle cx="8" cy="32" r="3" fill="url(#matchHead)" stroke="#450a0a" strokeWidth="0.8" />
           </g>
         )}
 
         {/* Fósforo 5: Diagonal (cruza el cuadrado) */}
         {c >= 5 && (
           <g>
-            <line x1="8" y1="8" x2="32" y2="32" stroke="#b45309" strokeWidth="3.5" strokeLinecap="round" />
-            <circle cx="20" cy="20" r="3" fill="url(#matchHead)" />
+            <line x1="8" y1="8" x2="32" y2="32" stroke="url(#matchWood)" strokeWidth="3.5" strokeLinecap="round" />
+            <circle cx="20" cy="20" r="3.2" fill="url(#matchHead)" stroke="#450a0a" strokeWidth="0.8" />
           </g>
         )}
       </svg>

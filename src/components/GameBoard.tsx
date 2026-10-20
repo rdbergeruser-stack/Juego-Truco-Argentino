@@ -621,14 +621,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
       </div>
 
-      {/* MESA DE TRUCO (Paño verde tradicional) */}
-      <div className="my-2 sm:my-4 max-w-5xl mx-auto w-full flex-1 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-emerald-900 via-emerald-950 to-green-950 border-2 sm:border-4 border-amber-900/60 shadow-2xl p-2.5 sm:p-4 md:p-8 flex flex-col justify-between relative overflow-hidden">
-        {/* Textura de paño sutil */}
+      {/* MESA DE TRUCO (Paño verde tradicional de fieltro con marco de caoba y remaches de bronce) */}
+      <div
+        className="my-2 sm:my-4 max-w-5xl mx-auto w-full flex-1 rounded-2xl sm:rounded-3xl border-[6px] sm:border-[10px] border-[#291408] shadow-2xl p-2.5 sm:p-4 md:p-8 flex flex-col justify-between relative overflow-hidden ring-1 ring-amber-600/50"
+        style={{
+          background: 'radial-gradient(ellipse at 50% 50%, #0d5435 0%, #063c26 55%, #022416 100%)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 50px rgba(0, 0, 0, 0.85)',
+        }}
+      >
+        {/* Remaches de bronce pulido en las 4 esquinas de la mesa de madera */}
+        <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
+        <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
+        <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
+        <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
+
+        {/* Textura de paño de fieltro sutil */}
         <div
-          className="absolute inset-0 opacity-15 pointer-events-none"
+          className="absolute inset-0 opacity-[0.07] pointer-events-none"
           style={{
             backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
+            backgroundSize: '16px 16px',
           }}
         />
 
