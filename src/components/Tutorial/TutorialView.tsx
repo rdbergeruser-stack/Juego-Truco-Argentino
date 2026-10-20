@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { GLOSSARY_ITEMS, TUTORIAL_MODULES } from '../../data/tutorialData';
 import type { TutorialModule } from '../../data/tutorialData';
-import { BookOpen, CheckCircle2, XCircle, ArrowRight, ArrowLeft, Play, Award, HelpCircle } from 'lucide-react';
+import { GuidedSimulator } from './GuidedSimulator';
+import { BookOpen, CheckCircle2, XCircle, ArrowRight, ArrowLeft, Play, Award, HelpCircle, Gamepad2 } from 'lucide-react';
 import { sound } from '../../game/sounds';
 
 interface TutorialViewProps {
@@ -10,7 +11,7 @@ interface TutorialViewProps {
 }
 
 export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenHierarchy }) => {
-  const [currentTab, setCurrentTab] = useState<'lessons' | 'glossary'>('lessons');
+  const [currentTab, setCurrentTab] = useState<'guided' | 'lessons' | 'glossary'>('guided');
   const [selectedModuleIndex, setSelectedModuleIndex] = useState(0);
   
   // Estado de los cuestionarios interactivos { [quizId]: selectedOptionIndex }
@@ -91,32 +92,48 @@ export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenH
           </div>
         </div>
 
-        {/* Pestañas de modo: Lecciones vs Diccionario */}
-        <div className="flex items-center gap-1.5 sm:gap-2 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-amber-900/30">
+        {/* Pestañas de modo: Simulador Guiado vs Manual Teórico vs Diccionario */}
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-amber-900/30">
           <button
-            onClick={() => setCurrentTab('lessons')}
-            className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation ${
-              currentTab === 'lessons'
-                ? 'bg-amber-500 text-stone-950 shadow'
-                : 'bg-stone-800/60 text-stone-300 hover:bg-stone-800'
+            onClick={() => setCurrentTab('guided')}
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
+              currentTab === 'guided'
+                ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
+                : 'bg-stone-800/80 text-stone-300 hover:bg-stone-800'
             }`}
           >
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>Lecciones ({TUTORIAL_MODULES.length})</span>
+            <Gamepad2 className="w-4 h-4" />
+            <span>Simulador de Jugadas Guiadas (8)</span>
+          </button>
+          <button
+            onClick={() => setCurrentTab('lessons')}
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
+              currentTab === 'lessons'
+                ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
+                : 'bg-stone-800/80 text-stone-300 hover:bg-stone-800'
+            }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span>Manual Teórico ({TUTORIAL_MODULES.length})</span>
           </button>
           <button
             onClick={() => setCurrentTab('glossary')}
-            className={`flex-1 sm:flex-none px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
               currentTab === 'glossary'
-                ? 'bg-amber-500 text-stone-950 shadow'
-                : 'bg-stone-800/60 text-stone-300 hover:bg-stone-800'
+                ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
+                : 'bg-stone-800/80 text-stone-300 hover:bg-stone-800'
             }`}
           >
             <span>📜</span>
-            <span>Diccionario</span>
+            <span>Diccionario Criollo</span>
           </button>
         </div>
       </div>
+
+      {/* Vista de Simulador Guiado Paso a Paso */}
+      {currentTab === 'guided' && (
+        <GuidedSimulator onStartGame={onStartGame} />
+      )}
 
       {/* Vista de Diccionario Criollo */}
       {currentTab === 'glossary' && (
