@@ -32,19 +32,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in text-slate-100">
-      <div className="bg-stone-900 border-2 border-amber-600/70 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in text-[#fbf3df] font-body">
+      <div className="bg-[#1c1009] border-2 border-amber-600/70 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-950 via-stone-900 to-amber-950 border-b border-amber-700/40">
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-950 via-[#261309] to-amber-950 border-b border-amber-700/50">
           <div className="flex items-center gap-2">
             <Settings className="w-5 h-5 text-amber-400" />
-            <h2 className="text-base font-serif font-black text-amber-300">
+            <h2 className="text-base font-display font-black text-amber-300">
               Ajustes de la Partida
             </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-stone-800 text-stone-400 hover:text-white"
+            className="p-1 rounded-lg hover:bg-amber-950/60 text-amber-200/70 hover:text-white"
           >
             <X className="w-5 h-5" />
           </button>

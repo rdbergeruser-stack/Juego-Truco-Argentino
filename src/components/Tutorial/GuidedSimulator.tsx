@@ -109,9 +109,9 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
       </div>
 
       {/* Tarjeta Principal del Escenario */}
-      <div className="bg-stone-900/95 border-2 border-amber-600/50 rounded-3xl p-3 sm:p-6 shadow-2xl space-y-4">
+      <div className="bg-[#1c1009]/95 border-2 border-amber-600/60 rounded-3xl p-3 sm:p-6 shadow-2xl space-y-4 text-[#fbf3df]">
         {/* Encabezado del Desafío */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-amber-900/40">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl sm:text-3xl p-2 rounded-2xl bg-amber-500/10 border border-amber-500/20">
               {scenario.icon}
@@ -127,10 +127,10 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
                   </span>
                 )}
               </div>
-              <h2 className="text-base sm:text-xl font-serif font-black text-amber-300 mt-0.5">
+              <h2 className="text-base sm:text-xl font-display font-black text-amber-300 mt-0.5">
                 {scenario.title}
               </h2>
-              <p className="text-xs text-stone-300">{scenario.subtitle}</p>
+              <p className="text-xs text-amber-200/70 font-body">{scenario.subtitle}</p>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
             <button
               onClick={handlePrevScenario}
               disabled={currentScenarioIndex === 0}
-              className="p-1.5 rounded-xl border border-stone-800 text-stone-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
+              className="p-1.5 rounded-xl border border-amber-900/60 bg-[#26140b] text-amber-200 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
               title="Anterior"
             >
               <ChevronLeft className="w-5 h-5" />
@@ -146,7 +146,7 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
             <button
               onClick={handleNextScenario}
               disabled={currentScenarioIndex === GUIDED_SCENARIOS.length - 1}
-              className="p-1.5 rounded-xl border border-stone-800 text-stone-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
+              className="p-1.5 rounded-xl border border-amber-900/60 bg-[#26140b] text-amber-200 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed touch-manipulation"
               title="Siguiente"
             >
               <ChevronRight className="w-5 h-5" />
@@ -155,20 +155,20 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
         </div>
 
         {/* Explicación de Don Facundo sobre la Mesa */}
-        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-2xl bg-amber-950/30 border border-amber-600/40 shadow-inner">
+        <div className="flex items-start gap-3 p-3 sm:p-4 rounded-2xl bg-[#261309] border border-amber-600/40 shadow-inner">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-500/20 border border-amber-400 flex items-center justify-center text-2xl shadow shrink-0">
             🤠
           </div>
           <div className="space-y-1">
             <div className="flex items-center gap-1.5">
-              <span className="font-serif font-black text-amber-300 text-xs sm:text-sm">
+              <span className="font-display font-black text-amber-300 text-xs sm:text-sm">
                 Don Facundo te explica la situación:
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-stone-200 leading-relaxed font-sans">
+            <p className="text-xs sm:text-sm text-[#fbf3df]/90 leading-relaxed font-body italic">
               &ldquo;{scenario.introDialogue.facundoComment}&rdquo;
             </p>
-            <div className="pt-1 flex items-center gap-1 text-amber-400 font-bold text-xs sm:text-sm">
+            <div className="pt-1 flex items-center gap-1 text-amber-400 font-display font-bold text-xs sm:text-sm">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{scenario.introDialogue.question}</span>
             </div>

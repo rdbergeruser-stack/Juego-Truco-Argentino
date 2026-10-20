@@ -106,14 +106,14 @@ const PlayerColumn: React.FC<{
       }`}
     >
       {/* Header del jugador */}
-      <div className="flex items-center justify-between pb-1 sm:pb-1.5 border-b border-amber-900/20">
+      <div className="flex items-center justify-between pb-1 sm:pb-1.5 border-b border-amber-900/30">
         <div className="flex items-center gap-1 min-w-0">
-          <span className="font-serif font-bold text-slate-100 text-xs sm:text-sm truncate max-w-[85px] sm:max-w-none">
+          <span className="font-display font-bold text-amber-100 text-xs sm:text-sm truncate max-w-[85px] sm:max-w-none">
             {name}
           </span>
           {isMano && (
             <span
-              className="text-[8px] sm:text-[10px] bg-amber-500 text-slate-950 px-1 py-0.2 rounded font-black tracking-wider uppercase shadow shrink-0"
+              className="text-[8px] sm:text-[10px] bg-amber-500 text-[#140a05] px-1 py-0.2 rounded font-display font-black tracking-wider uppercase shadow shrink-0"
               title="Es Mano"
             >
               MANO ✋
@@ -122,7 +122,7 @@ const PlayerColumn: React.FC<{
         </div>
         <div className="text-base sm:text-lg font-mono font-black text-amber-400 shrink-0">
           {score}
-          <span className="text-[10px] sm:text-xs text-slate-400 font-normal">/{targetScore}</span>
+          <span className="text-[10px] sm:text-xs text-amber-200/50 font-normal">/{targetScore}</span>
         </div>
       </div>
 
@@ -171,9 +171,9 @@ export const ScoreBoard: React.FC<ScoreBoardProps> = ({
   const [showDetails, setShowDetails] = useState(true);
 
   return (
-    <div className="bg-gradient-to-b from-amber-950/80 via-stone-900/90 to-stone-950 border border-amber-700/50 rounded-2xl p-2 sm:p-3 shadow-xl backdrop-blur-md w-full max-w-md">
+    <div className="bg-gradient-to-b from-[#24130a] via-[#1c0e08] to-[#120804] border border-amber-800/60 rounded-2xl p-2 sm:p-3 shadow-xl backdrop-blur-md w-full max-w-md">
       <div className="flex items-center justify-between px-1 mb-1.5">
-        <div className="flex items-center gap-1.5 text-amber-400 font-serif font-black text-[10px] sm:text-xs uppercase tracking-wider">
+        <div className="flex items-center gap-1.5 text-amber-300 font-display font-black text-[10px] sm:text-xs uppercase tracking-wider">
           <span>🪵</span>
           <span>Tanteador</span>
         </div>

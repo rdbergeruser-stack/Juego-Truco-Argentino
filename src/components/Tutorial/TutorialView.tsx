@@ -54,22 +54,22 @@ export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenH
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-2.5 sm:px-4 py-3 sm:py-6 space-y-4 sm:space-y-6 text-slate-100">
-      {/* Banner Principal */}
-      <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-950 via-stone-900 to-amber-950 border-2 border-amber-600/50 p-4 sm:p-6 md:p-8 shadow-2xl overflow-hidden">
+    <div className="max-w-5xl mx-auto px-2.5 sm:px-4 py-3 sm:py-6 space-y-4 sm:space-y-6 text-[#fbf3df] font-body">
+      {/* Banner Principal de la Pulpería */}
+      <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#24130a] via-[#1c0f08] to-[#24130a] border-2 border-amber-600/60 p-4 sm:p-6 md:p-8 shadow-2xl overflow-hidden">
         <div className="absolute -right-8 -bottom-8 opacity-10 text-8xl sm:text-9xl select-none pointer-events-none">
           🧉
         </div>
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
           <div>
-            <div className="flex items-center gap-1.5 text-amber-400 font-serif font-black text-[11px] sm:text-xs uppercase tracking-widest mb-1">
+            <div className="flex items-center gap-1.5 text-amber-400 font-display font-black text-[11px] sm:text-xs uppercase tracking-widest mb-1">
               <span>🇦🇷</span>
               <span>Escuela de Truco Criollo</span>
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-4xl font-serif font-black text-amber-300">
+            <h1 className="text-xl sm:text-2xl md:text-4xl font-display font-black text-amber-300 drop-shadow">
               Aprendé a Jugar al Truco Argentino
             </h1>
-            <p className="text-xs sm:text-sm text-stone-300 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-amber-100/80 mt-1 max-w-2xl leading-relaxed italic">
               De principiante a maestro: cartas bravas, tanteo de envido, pardas y el arte de mentir con picardía.
             </p>
           </div>
@@ -77,14 +77,14 @@ export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenH
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <button
               onClick={onOpenHierarchy}
-              className="px-3.5 py-2 bg-stone-800 hover:bg-stone-700 text-amber-300 border border-amber-600/40 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition touch-manipulation active:scale-95"
+              className="px-3.5 py-2 bg-[#2a170d] hover:bg-[#3d2013] text-amber-200 border border-amber-600/50 rounded-xl text-xs font-display font-bold flex items-center justify-center gap-1.5 transition touch-manipulation active:scale-95 shadow-md"
             >
-              <HelpCircle className="w-4 h-4" />
+              <HelpCircle className="w-4 h-4 text-amber-400" />
               <span>Jerarquía de Cartas</span>
             </button>
             <button
               onClick={onStartGame}
-              className="px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-900/40 transition transform active:scale-95 touch-manipulation"
+              className="px-4 py-2 sm:px-5 sm:py-2.5 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-[#140a05] rounded-xl font-display font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl border border-amber-300 transition transform active:scale-95 touch-manipulation tracking-wide"
             >
               <Play className="w-4 h-4 fill-current" />
               <span>Jugar contra la PC</span>
@@ -93,13 +93,13 @@ export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenH
         </div>
 
         {/* Pestañas de modo: Simulador Guiado vs Manual Teórico vs Diccionario */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-amber-900/30">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-amber-800/40">
           <button
             onClick={() => setCurrentTab('guided')}
-            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-display font-black tracking-wide transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
               currentTab === 'guided'
-                ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
-                : 'bg-stone-800/80 text-stone-300 hover:bg-stone-800'
+                ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-[#140a05] shadow-lg border border-amber-300 ring-2 ring-amber-400/40'
+                : 'bg-[#2a170d]/80 text-amber-200/80 hover:bg-[#2a170d] border border-amber-900/40'
             }`}
           >
             <Gamepad2 className="w-4 h-4" />
@@ -107,10 +107,10 @@ export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenH
           </button>
           <button
             onClick={() => setCurrentTab('lessons')}
-            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-display font-black tracking-wide transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
               currentTab === 'lessons'
-                ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
-                : 'bg-stone-800/80 text-stone-300 hover:bg-stone-800'
+                ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-[#140a05] shadow-lg border border-amber-300 ring-2 ring-amber-400/40'
+                : 'bg-[#2a170d]/80 text-amber-200/80 hover:bg-[#2a170d] border border-amber-900/40'
             }`}
           >
             <BookOpen className="w-4 h-4" />
@@ -118,10 +118,10 @@ export const TutorialView: React.FC<TutorialViewProps> = ({ onStartGame, onOpenH
           </button>
           <button
             onClick={() => setCurrentTab('glossary')}
-            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-xl text-xs font-display font-black tracking-wide transition flex items-center justify-center gap-1.5 touch-manipulation active:scale-95 ${
               currentTab === 'glossary'
-                ? 'bg-amber-500 text-stone-950 shadow-lg ring-2 ring-amber-300'
-                : 'bg-stone-800/80 text-stone-300 hover:bg-stone-800'
+                ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-[#140a05] shadow-lg border border-amber-300 ring-2 ring-amber-400/40'
+                : 'bg-[#2a170d]/80 text-amber-200/80 hover:bg-[#2a170d] border border-amber-900/40'
             }`}
           >
             <span>📜</span>

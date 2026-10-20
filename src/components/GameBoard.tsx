@@ -568,7 +568,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   };
 
   return (
-    <div className="relative min-h-[100dvh] bg-stone-950 flex flex-col justify-between p-2 sm:p-3 md:p-6 text-slate-100 select-none overflow-x-hidden">
+    <div className="relative min-h-[100dvh] bg-transparent flex flex-col justify-between p-2 sm:p-3 md:p-6 text-[#fbf3df] select-none overflow-x-hidden font-body">
       {/* Barra Superior de Control y Tanteador */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4 max-w-6xl mx-auto w-full">
         {/* Tanteador Criollo */}
@@ -585,7 +585,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         <div className="flex items-center justify-center gap-1.5 sm:gap-2 w-full md:w-auto">
           <button
             onClick={onOpenTutorial}
-            className="flex-1 md:flex-none px-2.5 sm:px-3 py-1.5 sm:py-2 bg-stone-900 hover:bg-stone-800 text-amber-300 border border-amber-600/50 rounded-xl text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 shadow transition touch-manipulation active:scale-95"
+            className="flex-1 md:flex-none px-3 sm:px-4 py-1.5 sm:py-2 bg-[#26140b] hover:bg-[#381e10] text-amber-300 border border-amber-600/50 rounded-xl text-[11px] sm:text-xs font-display font-bold flex items-center justify-center gap-1.5 shadow-md transition touch-manipulation active:scale-95"
           >
             <GraduationCap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
             <span>Escuela</span>
@@ -593,7 +593,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
           <button
             onClick={onOpenHierarchy}
-            className="px-2.5 sm:px-3 py-1.5 sm:py-2 bg-stone-900 hover:bg-stone-800 text-stone-200 border border-stone-700 rounded-xl text-[11px] sm:text-xs font-bold flex items-center gap-1 shadow transition touch-manipulation active:scale-95"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 bg-[#26140b] hover:bg-[#381e10] text-amber-100 border border-amber-800/60 rounded-xl text-[11px] sm:text-xs font-display font-bold flex items-center gap-1.5 shadow-md transition touch-manipulation active:scale-95"
           >
             <HelpCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
             <span className="hidden xs:inline">Jerarquía</span>
@@ -605,15 +605,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               sound.enabled = newSound;
               onUpdateSettings({ soundEnabled: newSound });
             }}
-            className="p-1.5 sm:p-2 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-xl transition touch-manipulation active:scale-95"
+            className="p-1.5 sm:p-2 bg-[#26140b] hover:bg-[#381e10] text-amber-200 border border-amber-800/60 rounded-xl transition touch-manipulation active:scale-95"
             title={settings.soundEnabled ? 'Silenciar sonidos' : 'Activar sonidos'}
           >
-            {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-stone-500" />}
+            {settings.soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4 text-amber-200/50" />}
           </button>
 
           <button
             onClick={restartMatch}
-            className="p-1.5 sm:p-2 bg-stone-900 hover:bg-stone-800 text-stone-300 border border-stone-700 rounded-xl transition touch-manipulation active:scale-95"
+            className="p-1.5 sm:p-2 bg-[#26140b] hover:bg-[#381e10] text-amber-200 border border-amber-800/60 rounded-xl transition touch-manipulation active:scale-95"
             title="Reiniciar partida desde cero"
           >
             <RotateCcw className="w-4 h-4 text-amber-400" />
@@ -812,25 +812,25 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
       </div>
 
-      {/* PANEL DE ACCIONES Y CANTOS */}
-      <div className="max-w-4xl mx-auto w-full bg-stone-900/95 border border-stone-800 rounded-2xl p-2 sm:p-3 shadow-xl backdrop-blur-md">
+      {/* PANEL DE ACCIONES Y CANTOS (Estilo Taberna de Pulpería) */}
+      <div className="max-w-4xl mx-auto w-full bg-[#1c1009]/95 border-2 border-amber-900/60 rounded-2xl p-2 sm:p-3 shadow-2xl backdrop-blur-md">
         {/* Caso 1: Hay un canto pendiente para responder */}
         {pendingCall && currentTurn === 'player' ? (
           <div className="flex flex-col items-center gap-1.5 sm:gap-2">
-            <span className="text-[11px] sm:text-xs text-amber-300 font-bold flex items-center gap-1 animate-pulse">
-              <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-xs sm:text-sm text-amber-300 font-display font-black flex items-center gap-1.5 animate-pulse tracking-wide">
+              <ShieldAlert className="w-4 h-4 text-amber-400" />
               ¡El rival cantó {pendingCall.toUpperCase()}! ¿Qué respondés?
             </span>
-            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 w-full">
+            <div className="flex flex-wrap items-center justify-center gap-2 w-full">
               <button
                 onClick={() => handlePlayerResponse(true)}
-                className="flex-1 sm:flex-none min-h-[42px] px-4 sm:px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-xl text-xs sm:text-sm shadow-lg transition active:scale-95 touch-manipulation"
+                className="flex-1 sm:flex-none min-h-[44px] px-5 sm:px-7 py-2 bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-[#fbf3df] font-display font-black rounded-xl text-xs sm:text-sm shadow-xl border border-emerald-400/50 transition active:scale-95 touch-manipulation tracking-wider"
               >
                 ¡QUIERO! 👍
               </button>
               <button
                 onClick={() => handlePlayerResponse(false)}
-                className="flex-1 sm:flex-none min-h-[42px] px-4 sm:px-6 py-2 bg-stone-800 hover:bg-stone-700 text-stone-300 font-bold rounded-xl text-xs sm:text-sm border border-stone-700 transition active:scale-95 touch-manipulation"
+                className="flex-1 sm:flex-none min-h-[44px] px-5 sm:px-7 py-2 bg-[#2d180f] hover:bg-[#3d2014] text-amber-200/90 font-display font-bold rounded-xl text-xs sm:text-sm border border-amber-800/60 transition active:scale-95 touch-manipulation tracking-wider"
               >
                 NO QUIERO 👎
               </button>
@@ -839,7 +839,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               {pendingCall === 'truco' && (
                 <button
                   onClick={() => handlePlayerChant('retruco')}
-                  className="w-full sm:w-auto min-h-[42px] px-4 py-2 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
+                  className="w-full sm:w-auto min-h-[44px] px-5 py-2 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 text-[#140a05] font-display font-black rounded-xl text-xs sm:text-sm shadow-lg border border-amber-300 transition active:scale-95 touch-manipulation tracking-wider"
                 >
                   ¡QUIERO RETRUCO! 🔥
                 </button>
@@ -847,7 +847,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               {pendingCall === 'retruco' && (
                 <button
                   onClick={() => handlePlayerChant('vale_cuatro')}
-                  className="w-full sm:w-auto min-h-[42px] px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
+                  className="w-full sm:w-auto min-h-[44px] px-5 py-2 bg-gradient-to-r from-red-800 to-rose-900 text-[#fbf3df] font-display font-black rounded-xl text-xs sm:text-sm shadow-lg border border-red-500/60 transition active:scale-95 touch-manipulation tracking-wider"
                 >
                   ¡QUIERO VALE CUATRO! ⚡
                 </button>
@@ -858,13 +858,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <>
                   <button
                     onClick={() => handlePlayerChant('real_envido')}
-                    className="flex-1 sm:flex-none min-h-[40px] px-3.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
+                    className="flex-1 sm:flex-none min-h-[42px] px-4 py-2 bg-gradient-to-r from-amber-700 to-amber-800 text-amber-100 font-display font-black rounded-xl text-xs sm:text-sm shadow-md border border-amber-600/50 transition active:scale-95 touch-manipulation tracking-wider"
                   >
                     REAL ENVIDO
                   </button>
                   <button
                     onClick={() => handlePlayerChant('falta_envido')}
-                    className="flex-1 sm:flex-none min-h-[40px] px-3.5 py-1.5 bg-purple-700 hover:bg-purple-600 text-white font-black rounded-xl text-xs sm:text-sm shadow transition active:scale-95 touch-manipulation"
+                    className="flex-1 sm:flex-none min-h-[42px] px-4 py-2 bg-gradient-to-r from-purple-900 to-purple-800 text-purple-100 font-display font-black rounded-xl text-xs sm:text-sm shadow-md border border-purple-500/50 transition active:scale-95 touch-manipulation tracking-wider"
                   >
                     FALTA ENVIDO
                   </button>
@@ -876,14 +876,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           /* Caso 2: Controles normales del jugador */
           <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
             {/* Cantos de Envido y Flor */}
-            <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               {!envidoDone && currentRound === 1 && trucoLevel === 'none' && (
                 <>
                   {settings.withFlor && hasFlor(playerHand) && (
                     <button
                       onClick={handlePlayerFlor}
                       disabled={currentTurn !== 'player'}
-                      className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-pink-600 to-purple-600 text-white font-black rounded-xl text-[11px] sm:text-xs shadow hover:from-pink-500 hover:to-purple-500 transition disabled:opacity-40 active:scale-95 touch-manipulation"
+                      className="min-h-[40px] px-3.5 sm:px-4 py-1.5 bg-gradient-to-r from-pink-800 to-purple-800 text-white font-display font-black rounded-xl text-xs shadow-md border border-pink-400/50 hover:from-pink-700 hover:to-purple-700 transition disabled:opacity-40 active:scale-95 touch-manipulation tracking-wide"
                     >
                       🌸 ¡FLOR!
                     </button>
@@ -891,21 +891,21 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                   <button
                     onClick={() => handlePlayerChant('envido')}
                     disabled={currentTurn !== 'player'}
-                    className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-amber-700 hover:bg-amber-600 text-amber-100 font-bold rounded-xl text-[11px] sm:text-xs shadow transition disabled:opacity-40 active:scale-95 touch-manipulation"
+                    className="min-h-[40px] px-3.5 sm:px-4 py-1.5 bg-gradient-to-r from-[#3d2315] to-[#2d180d] hover:from-[#522f1c] hover:to-[#3d2315] text-amber-200 font-display font-bold rounded-xl text-xs shadow border border-amber-800/60 transition disabled:opacity-40 active:scale-95 touch-manipulation tracking-wide"
                   >
                     Envido
                   </button>
                   <button
                     onClick={() => handlePlayerChant('real_envido')}
                     disabled={currentTurn !== 'player'}
-                    className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold rounded-xl text-[11px] sm:text-xs shadow transition disabled:opacity-40 active:scale-95 touch-manipulation"
+                    className="min-h-[40px] px-3.5 sm:px-4 py-1.5 bg-gradient-to-r from-[#4d2a17] to-[#381c0e] hover:from-[#63361e] hover:to-[#4d2a17] text-amber-100 font-display font-bold rounded-xl text-xs shadow border border-amber-700/60 transition disabled:opacity-40 active:scale-95 touch-manipulation tracking-wide"
                   >
                     Real Envido
                   </button>
                   <button
                     onClick={() => handlePlayerChant('falta_envido')}
                     disabled={currentTurn !== 'player'}
-                    className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-purple-700 hover:bg-purple-600 text-white font-bold rounded-xl text-[11px] sm:text-xs shadow transition disabled:opacity-40 active:scale-95 touch-manipulation"
+                    className="min-h-[40px] px-3.5 sm:px-4 py-1.5 bg-gradient-to-r from-purple-950 to-[#2e1030] hover:from-purple-900 hover:to-[#3e1540] text-purple-200 font-display font-bold rounded-xl text-xs shadow border border-purple-800/60 transition disabled:opacity-40 active:scale-95 touch-manipulation tracking-wide"
                   >
                     Falta Envido
                   </button>
@@ -914,15 +914,15 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             </div>
 
             {/* Cantos de Truco y Mazo */}
-            <div className="flex items-center gap-1 sm:gap-1.5 ml-auto">
+            <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
               {trucoLevel === 'none' && (
                 <button
                   onClick={() => handlePlayerChant('truco')}
                   disabled={currentTurn !== 'player'}
-                  className="min-h-[38px] sm:min-h-[42px] px-4 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-stone-950 font-black rounded-xl text-xs sm:text-sm shadow-lg transition active:scale-95 touch-manipulation disabled:opacity-40"
+                  className="min-h-[40px] sm:min-h-[44px] px-5 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-400 text-[#140a05] font-display font-black rounded-xl text-xs sm:text-sm shadow-xl border border-amber-300 transition active:scale-95 touch-manipulation disabled:opacity-40 tracking-wider"
                 >
-                  <span className="flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> ¡TRUCO!
+                  <span className="flex items-center gap-1.5">
+                    <Flame className="w-4 h-4 text-amber-950" /> ¡TRUCO!
                   </span>
                 </button>
               )}
@@ -931,7 +931,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <button
                   onClick={() => handlePlayerChant('retruco')}
                   disabled={currentTurn !== 'player'}
-                  className="min-h-[38px] px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-stone-950 font-black rounded-xl text-xs shadow transition active:scale-95 touch-manipulation disabled:opacity-40"
+                  className="min-h-[40px] px-4 py-1.5 bg-gradient-to-r from-amber-600 to-amber-700 text-[#140a05] font-display font-black rounded-xl text-xs shadow-lg border border-amber-300 transition active:scale-95 touch-manipulation disabled:opacity-40 tracking-wider"
                 >
                   ¡RETRUCO!
                 </button>
@@ -941,7 +941,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 <button
                   onClick={() => handlePlayerChant('vale_cuatro')}
                   disabled={currentTurn !== 'player'}
-                  className="min-h-[38px] px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl text-xs shadow transition active:scale-95 touch-manipulation disabled:opacity-40"
+                  className="min-h-[40px] px-4 py-1.5 bg-gradient-to-r from-red-800 to-rose-900 text-[#fbf3df] font-display font-black rounded-xl text-xs shadow-lg border border-red-500/60 transition active:scale-95 touch-manipulation disabled:opacity-40 tracking-wider"
                 >
                   ¡VALE CUATRO!
                 </button>
@@ -951,7 +951,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               <button
                 onClick={handlePlayerFold}
                 disabled={handEnded}
-                className="min-h-[38px] px-2.5 sm:px-3 py-1.5 bg-stone-800 hover:bg-red-950/60 hover:text-red-300 text-stone-400 border border-stone-700 rounded-xl text-[11px] sm:text-xs font-semibold transition disabled:opacity-40 active:scale-95 touch-manipulation"
+                className="min-h-[40px] px-3 sm:px-4 py-1.5 bg-[#26140b] hover:bg-[#381e10] hover:text-red-300 text-amber-200/70 border border-amber-900/60 rounded-xl text-xs font-display font-bold transition disabled:opacity-40 active:scale-95 touch-manipulation tracking-wide"
               >
                 Al mazo
               </button>

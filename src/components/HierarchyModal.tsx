@@ -11,24 +11,24 @@ export const HierarchyModal: React.FC<HierarchyModalProps> = ({ isOpen, onClose 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="bg-stone-900 border-2 border-amber-600/60 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-slate-100">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in font-body">
+      <div className="bg-[#1c1009] border-2 border-amber-600/70 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-[#fbf3df]">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-950 via-stone-900 to-amber-950 border-b border-amber-700/40">
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-amber-950 via-[#261309] to-amber-950 border-b border-amber-700/50">
           <div className="flex items-center gap-2">
             <Trophy className="w-6 h-6 text-amber-400" />
             <div>
-              <h2 className="text-lg font-serif font-black text-amber-300">
+              <h2 className="text-lg font-display font-black text-amber-300">
                 Escala de Jerarquía del Truco Argentino
               </h2>
-              <p className="text-xs text-amber-200/70">
+              <p className="text-xs text-amber-200/80 font-body">
                 De mayor poder (arriba) a menor poder (abajo). La carta superior mata a cualquiera inferior.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-stone-800 text-stone-400 hover:text-white transition"
+            className="p-1.5 rounded-lg hover:bg-amber-950/60 text-amber-200/70 hover:text-white transition"
           >
             <X className="w-5 h-5" />
           </button>
