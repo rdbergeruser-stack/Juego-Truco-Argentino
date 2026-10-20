@@ -170,17 +170,14 @@ export const CardView: React.FC<CardViewProps> = ({
       ) : (
         /* FALLBACK: Renderizado vectorial tradicional artesanal */
         <div className="w-full h-full border border-[#8f7556]/60 rounded-lg flex flex-col justify-between p-1 relative overflow-hidden bg-transparent">
-          {/* Esquina Superior Izquierda: Número + Símbolo del palo */}
-          <div className="flex items-center gap-0.5 leading-none z-10">
+          {/* Esquina Superior Izquierda: SOLO el número (sin iconos) */}
+          <div className="flex items-center leading-none z-10 pl-0.5 pt-0.5">
             <span
               className="font-display font-black text-sm sm:text-lg tracking-tighter"
               style={{ color: theme.text }}
             >
               {card.number}
             </span>
-            <div className="scale-75 sm:scale-90 origin-left">
-              <SuitSymbol suit={card.suit} size={15} />
-            </div>
           </div>
 
           {/* CENTRO ARTÍSTICO DEL NAIPE (Basado fielmente en el patrón tradicional Fournier) */}
@@ -188,17 +185,14 @@ export const CardView: React.FC<CardViewProps> = ({
             <CardCenterLayout number={card.number} suit={card.suit} />
           </div>
 
-          {/* Esquina Inferior Derecha (Invertida): Número + Símbolo del palo */}
-          <div className="flex items-center gap-0.5 leading-none self-end rotate-180 z-10">
+          {/* Esquina Inferior Derecha (Invertida): SOLO el número (sin iconos) */}
+          <div className="flex items-center leading-none self-end rotate-180 z-10 pr-0.5 pb-0.5">
             <span
               className="font-display font-black text-sm sm:text-lg tracking-tighter"
               style={{ color: theme.text }}
             >
               {card.number}
             </span>
-            <div className="scale-75 sm:scale-90 origin-left">
-              <SuitSymbol suit={card.suit} size={15} />
-            </div>
           </div>
         </div>
       )}
