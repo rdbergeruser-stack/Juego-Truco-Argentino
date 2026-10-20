@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { Card, Suit } from '../types/truco';
-import { CardCenterLayout, SuitSymbol } from './CardArt';
+import { CardCenterLayout } from './CardArt';
 
 interface CardViewProps {
   card?: Card;
