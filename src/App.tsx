@@ -2,12 +2,21 @@ import { useState } from 'react';
 import type { GameSettings } from './types/truco';
 import { TutorialView } from './components/Tutorial/TutorialView';
 import { GameBoard } from './components/GameBoard';
+import { MultiplayerView } from './components/Multiplayer/MultiplayerView';
 import { HierarchyModal } from './components/HierarchyModal';
 import { SettingsModal } from './components/SettingsModal';
-import { GraduationCap, Swords, Settings, HelpCircle } from 'lucide-react';
+import { GraduationCap, Swords, Settings, HelpCircle, Users } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'tutorial' | 'game'>('tutorial');
+  const [activeTab, setActiveTab] = useState<'tutorial' | 'game' | 'multiplayer'>(() => {
+    // Si la URL contiene un parámetro de sala, abrir directamente el modo multijugador
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('sala')) return 'multiplayer';
+    }
+    return 'tutorial';
+  });
+
   const [isHierarchyOpen, setIsHierarchyOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -46,7 +55,7 @@ export function App() {
                 </span>
               </div>
               <span className="text-[10px] text-amber-200/60 hidden sm:block font-body italic -mt-0.5">
-                Pulpería, Escuela & Partida vs PC
+                Pulpería, Escuela & Amigos Online
               </span>
             </div>
           </div>
@@ -55,7 +64,7 @@ export function App() {
           <div className="flex items-center bg-[#120904] p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-amber-900/60 shadow-inner">
             <button
               onClick={() => setActiveTab('tutorial')}
-              className={`flex items-center gap-1.5 px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-display font-black tracking-wide transition touch-manipulation active:scale-95 ${
+              className={`flex items-center gap-1 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-display font-black tracking-wide transition touch-manipulation active:scale-95 ${
                 activeTab === 'tutorial'
                   ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-[#140a05] shadow-md border border-amber-300/40'
                   : 'text-amber-200/70 hover:text-amber-100'
@@ -66,14 +75,26 @@ export function App() {
             </button>
             <button
               onClick={() => setActiveTab('game')}
-              className={`flex items-center gap-1.5 px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-display font-black tracking-wide transition touch-manipulation active:scale-95 ${
+              className={`flex items-center gap-1 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-display font-black tracking-wide transition touch-manipulation active:scale-95 ${
                 activeTab === 'game'
                   ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-[#140a05] shadow-md border border-amber-300/40'
                   : 'text-amber-200/70 hover:text-amber-100'
               }`}
             >
               <Swords className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span>Jugar</span>
+              <span>vs PC</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('multiplayer')}
+              className={`flex items-center gap-1 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-display font-black tracking-wide transition touch-manipulation active:scale-95 relative ${
+                activeTab === 'multiplayer'
+                  ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-[#140a05] shadow-md border border-amber-300/40'
+                  : 'text-amber-200/70 hover:text-amber-100'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+              <span>Con Amigos</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse absolute top-1 right-1" />
             </button>
           </div>
 
@@ -104,12 +125,17 @@ export function App() {
             onStartGame={() => setActiveTab('game')}
             onOpenHierarchy={() => setIsHierarchyOpen(true)}
           />
-        ) : (
+        ) : activeTab === 'game' ? (
           <GameBoard
             onOpenTutorial={() => setActiveTab('tutorial')}
             onOpenHierarchy={() => setIsHierarchyOpen(true)}
             settings={settings}
             onUpdateSettings={updateSettings}
+          />
+        ) : (
+          <MultiplayerView
+            onBackToMenu={() => setActiveTab('game')}
+            onOpenHierarchy={() => setIsHierarchyOpen(true)}
           />
         )}
       </main>
