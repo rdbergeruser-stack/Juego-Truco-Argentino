@@ -375,29 +375,9 @@ def generate_story():
             
         item_y += 135
 
-    # 7. LLAMADO A LA ACCIÓN (CALL TO ACTION) EN EL PIE
-    cta_w = 980
-    cta_h = 100
-    cta_x = (W - cta_w) // 2
-    cta_y = 1695
-    
-    cta_glow = Image.new('RGBA', (cta_w + 40, cta_h + 40), (0, 0, 0, 0))
-    cg_draw = ImageDraw.Draw(cta_glow)
-    cg_draw.rounded_rectangle([10, 10, cta_w + 20, cta_h + 20], radius=34, fill=(16, 185, 129, 160))
-    cta_glow = cta_glow.filter(ImageFilter.GaussianBlur(18))
-    story.paste(cta_glow, (cta_x - 10, cta_y - 10), cta_glow)
-    
-    draw.rounded_rectangle([cta_x, cta_y, cta_x + cta_w, cta_y + cta_h], radius=28, fill=(4, 120, 87), outline=(52, 211, 153), width=3)
-    
-    cta_label = "👉 ¡TOCÁ EL LINK Y ENTRÁ A LA MESA!"
-    cl_box = draw.textbbox((0, 0), cta_label, font=font_cinzel_cta)
-    cl_w = cl_box[2] - cl_box[0]
-    draw.text(((W - cl_w) // 2, cta_y + 30), cta_label, font=font_cinzel_cta, fill=(255, 255, 255))
-    
-    sub_foot = "100% Web Gratis • Sin Descargas • Jugá en el Celular o PC"
-    sf_box = draw.textbbox((0, 0), sub_foot, font=font_lora_bold)
-    sf_w = sf_box[2] - sf_box[0]
-    draw.text(((W - sf_w) // 2, cta_y + 120), sub_foot, font=font_lora_bold, fill=(245, 158, 11))
+    # 7. ESPACIO INFERIOR LIBRE (Para colocar el sticker interactivo de enlace de Instagram)
+    # Se mantiene despejada el área desde y=1654 hasta y=1920 con el fondo de quebracho pulpero,
+    # dejando el espacio ideal para ubicar el sticker de link sin interferencias.
 
     output_path = 'public/historia_instagram_truco.png'
     story.save(output_path, quality=95)
