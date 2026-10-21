@@ -568,7 +568,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   };
 
   return (
-    <div className="relative min-h-[100dvh] bg-transparent flex flex-col justify-between p-2 sm:p-3 md:p-6 text-[#fbf3df] select-none overflow-x-hidden font-body">
+    <div className="relative min-h-[100dvh] bg-transparent flex flex-col justify-between p-2 sm:p-3 md:p-6 text-[#fbf3df] overflow-x-clip font-body">
       {/* Barra Superior de Control y Tanteador */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-2 sm:gap-4 max-w-6xl mx-auto w-full">
         {/* Tanteador Criollo */}

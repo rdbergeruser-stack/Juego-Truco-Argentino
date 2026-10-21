@@ -1,20 +1,30 @@
 @import "tailwindcss";
 
 @layer base {
-  html, body {
+  html {
     margin: 0;
     padding: 0;
     background-color: #140a05;
     color: #fbf3df;
     font-family: 'Lora', Georgia, 'Times New Roman', serif;
-    min-height: 100vh;
-    min-height: 100dvh;
+    min-height: 100%;
+    overflow-x: clip;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #140a05;
+    color: #fbf3df;
+    font-family: 'Lora', Georgia, 'Times New Roman', serif;
+    min-height: 100%;
     width: 100%;
-    overflow-x: hidden;
-    touch-action: manipulation;
+    overflow-x: clip;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    overscroll-behavior-y: contain;
   }
 
   button {

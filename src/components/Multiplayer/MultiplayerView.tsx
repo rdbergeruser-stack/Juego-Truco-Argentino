@@ -384,7 +384,7 @@ export function MultiplayerView({ onBackToMenu, onOpenHierarchy }: MultiplayerVi
 
   // 3. PANTALLA PRINCIPAL: CREAR O UNIRSE A SALA
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-6 select-none">
+    <div className="max-w-3xl mx-auto px-4 py-8 flex flex-col gap-6">
       {/* Encabezado */}
       <div className="text-center flex flex-col items-center gap-2">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 via-amber-700 to-amber-950 border-2 border-amber-400/60 flex items-center justify-center text-3xl shadow-xl">

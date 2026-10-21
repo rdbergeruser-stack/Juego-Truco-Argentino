@@ -83,7 +83,7 @@ export function MultiplayerGameBoard({
   };
 
   return (
-    <div className="flex flex-col gap-3 max-w-6xl mx-auto px-2 sm:px-4 py-3 select-none">
+    <div className="flex flex-col gap-3 max-w-6xl mx-auto px-2 sm:px-4 py-3">
       {/* Notificación Flotante de Seña Secreta Recibida */}
       {showIncomingSena && (
         <div className="fixed top-16 right-4 z-50 bg-gradient-to-r from-amber-600 to-amber-700 border-2 border-amber-300 text-[#140a05] px-4 py-3 rounded-2xl shadow-2xl animate-bounce flex items-center gap-3">

@@ -33,7 +33,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-pulperia text-[#fbf3df] flex flex-col font-body selection:bg-amber-600 selection:text-[#fbf3df]">
+    <div className="min-h-screen bg-pulperia text-[#fbf3df] flex flex-col font-body selection:bg-amber-600 selection:text-[#fbf3df] w-full overflow-x-clip">
       {/* Barra de Navegación Principal de la Pulpería */}
       <header className="sticky top-0 z-30 bg-[#1c1009]/95 border-b border-amber-800/40 backdrop-blur-md px-3 sm:px-4 py-2 sm:py-2.5 shadow-xl">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-2 md:gap-3">
