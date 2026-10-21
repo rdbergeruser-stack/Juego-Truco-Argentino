@@ -22,3 +22,4 @@ for b in blocks:
     print(f'Done: {filename}')
 
 print('All site fonts downloaded successfully!')
+

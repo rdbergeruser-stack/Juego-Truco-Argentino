@@ -35,12 +35,60 @@ def add_drop_shadow(img, offset=(8, 14), blur=16, shadow_color=(0, 0, 0, 220)):
     canvas.paste(img, (pad, pad), img)
     return canvas, pad
 
+def make_suit_icon(suit_name, target_size=46):
+    """Genera un medallón circular elegante con la ilustración real de cada palo."""
+    badge = Image.new('RGBA', (target_size, target_size), (0, 0, 0, 0))
+    b_draw = ImageDraw.Draw(badge)
+    
+    # Anillo exterior dorado
+    b_draw.ellipse([0, 0, target_size - 1, target_size - 1], fill=(38, 18, 8), outline=(245, 158, 11), width=2)
+    # Fondo pergamino interior
+    pad = 3
+    b_draw.ellipse([pad, pad, target_size - 1 - pad, target_size - 1 - pad], fill=(245, 237, 224))
+    
+    if suit_name == 'oro':
+        # Moneda de oro
+        o4 = Image.open('public/cards/oro_4.png')
+        coin = o4.crop((190, 210, 370, 390))
+        coin_res = coin.resize((target_size - 8, target_size - 8), Image.Resampling.LANCZOS).convert('RGBA')
+        mask = Image.new('L', (target_size - 8, target_size - 8), 0)
+        ImageDraw.Draw(mask).ellipse([0, 0, target_size - 9, target_size - 9], fill=255)
+        badge.paste(coin_res, (4, 4), mask)
+        
+    elif suit_name == 'copa':
+        # Copa dorada
+        c4 = Image.open('public/cards/copa_4.png')
+        cup = c4.crop((190, 210, 370, 420))
+        cw, ch = 32, 36
+        cup_res = cup.resize((cw, ch), Image.Resampling.LANCZOS).convert('RGBA')
+        badge.paste(cup_res, ((target_size - cw) // 2, (target_size - ch) // 2), cup_res)
+        
+    elif suit_name == 'espada':
+        # Espada cruzada en diagonal
+        e4 = Image.open('public/cards/espada_4.png')
+        sword = e4.crop((185, 185, 315, 495))
+        sword_rot = sword.rotate(45, expand=True, resample=Image.Resampling.BICUBIC)
+        sw, sh = 34, 34
+        sword_res = sword_rot.resize((sw, sh), Image.Resampling.LANCZOS).convert('RGBA')
+        badge.paste(sword_res, ((target_size - sw) // 2, (target_size - sh) // 2), sword_res)
+        
+    elif suit_name == 'basto':
+        # Basto cruzado en diagonal
+        b4 = Image.open('public/cards/basto_4.png')
+        club = b4.crop((185, 185, 315, 495))
+        club_rot = club.rotate(-45, expand=True, resample=Image.Resampling.BICUBIC)
+        bw, bh = 34, 34
+        club_res = club_rot.resize((bw, bh), Image.Resampling.LANCZOS).convert('RGBA')
+        badge.paste(club_res, ((target_size - bw) // 2, (target_size - bh) // 2), club_res)
+        
+    return badge
+
 def generate_story():
     W, H = 1080, 1920
     story = Image.new('RGB', (W, H), (14, 8, 4))
     draw = ImageDraw.Draw(story)
     
-    # TIPOGRAFÍAS DEL SITIO WEB
+    # TIPOGRAFÍAS OFICIALES DEL SITIO WEB (Cinzel y Lora)
     font_cinzel_black = ImageFont.truetype('fonts/Cinzel_900.ttf', 68)
     font_cinzel_bold = ImageFont.truetype('fonts/Cinzel_700.ttf', 36)
     font_cinzel_badge = ImageFont.truetype('fonts/Cinzel_700.ttf', 22)
@@ -150,7 +198,7 @@ def generate_story():
     c2_comp, pad2 = add_drop_shadow(c2_rot, offset=(0, 22), blur=20, shadow_color=(0, 0, 0, 240))
     story.paste(c2_comp, (W // 2 - (cw // 2) - pad2, hand_y - 25 - pad2), c2_comp)
 
-    # 5. RECUADRO IZQUIERDO: PANTALLA REAL DE JUEGO (REPLICA EXACTA DEL JUEGO)
+    # 5. RECUADRO IZQUIERDO: PANTALLA REAL DE JUEGO (REPLICA EXACTA)
     phone_pad = 12
     screen_w = 328
     screen_h = 650
@@ -159,21 +207,17 @@ def generate_story():
     phone_x = 50
     phone_y = 980
     
-    # Carcasa de celular
     phone_frame = Image.new('RGBA', (phone_w, phone_h), (0, 0, 0, 0))
     pf_draw = ImageDraw.Draw(phone_frame)
     pf_draw.rounded_rectangle([0, 0, phone_w, phone_h], radius=32, fill=(24, 24, 27), outline=(217, 119, 6), width=3)
     
-    # Extraer la pantalla real de juego subida por el usuario
+    # Captura real del juego
     game_screenshot_path = r'C:/Users/ID1539/.gemini/antigravity/brain/6ed69378-467c-4738-806b-142d07e352ac/.user_uploaded/media_1792587208105_581af75c.jpg'
     if os.path.exists(game_screenshot_path):
         real_sc = Image.open(game_screenshot_path)
-        # Recortar la interfaz exacta del juego (excluyendo la barra superior de Android y la barra de navegación)
         clean_game_ui = real_sc.crop((0, 116, 449, 1005))
-        # Escalar a la pantalla del mockup
         ui_res = clean_game_ui.resize((screen_w, screen_h), Image.Resampling.LANCZOS)
         
-        # Máscara redondeada para la pantalla
         ui_mask = Image.new('L', (screen_w * 2, screen_h * 2), 0)
         uim_draw = ImageDraw.Draw(ui_mask)
         uim_draw.rounded_rectangle([0, 0, screen_w * 2, screen_h * 2], radius=36, fill=255)
@@ -181,7 +225,6 @@ def generate_story():
         
         phone_frame.paste(ui_res, (phone_pad, phone_pad), ui_mask)
         
-    # Sombra del teléfono
     p_shadow = Image.new('RGBA', (phone_w + 30, phone_h + 30), (0, 0, 0, 0))
     ps_draw = ImageDraw.Draw(p_shadow)
     ps_draw.rounded_rectangle([10, 10, phone_w + 10, phone_h + 10], radius=32, fill=(0, 0, 0, 210))
@@ -197,13 +240,12 @@ def generate_story():
     draw.rounded_rectangle([phone_x + (phone_w - ml_w) // 2 - 16, phone_y - 18, phone_x + (phone_w + ml_w) // 2 + 16, phone_y + 14], radius=10, fill=(217, 119, 6), outline=(254, 240, 138), width=2)
     draw.text((phone_x + (phone_w - ml_w) // 2, phone_y - 14), m_label, font=font_cinzel_badge, fill=(20, 10, 5))
 
-    # 6. RECUADRO DERECHO: LAS 4 CARACTERÍSTICAS CLAVE
+    # 6. RECUADRO DERECHO: LAS 4 CARACTERÍSTICAS CON LOS 4 PALOS DE LA BARAJA
     feat_x = 432
     feat_y = 980
     feat_w = 598
     feat_h = phone_h  # Exactamente la misma altura (674px)
     
-    # Sombra del panel derecho
     f_shadow = Image.new('RGBA', (feat_w + 30, feat_h + 30), (0, 0, 0, 0))
     fs_draw = ImageDraw.Draw(f_shadow)
     fs_draw.rounded_rectangle([10, 10, feat_w + 10, feat_h + 10], radius=26, fill=(0, 0, 0, 200))
@@ -217,33 +259,45 @@ def generate_story():
     draw.text((feat_x + 32, feat_y + 28), "LO QUE ENCONTRÁS:", font=font_cinzel_card, fill=(251, 191, 36))
     draw.line([feat_x + 32, feat_y + 68, feat_x + feat_w - 32, feat_y + 68], fill=(180, 83, 9), width=1)
     
-    # LAS 4 CARACTERÍSTICAS CLAVE:
+    # LAS 4 CARACTERÍSTICAS CLAVE ASOCIADAS CADA UNA A UN PALO REAL:
+    # 1. Espadas -> Te enseña a jugar
+    # 2. Bastos -> Vs la computadora
+    # 3. Oros -> Con amigos online
+    # 4. Copas -> Baraja criolla de 40
     key_features = [
-        ("🎓 TE ENSEÑA A JUGAR", "Escuela interactiva paso a paso con las cartas bravas, el tanteo del envido y el arte de mentir."),
-        ("🤖 VS LA COMPUTADORA", "Jugá partidas rápidas en tu celu o compu contra la inteligencia artificial (3 dificultades)."),
-        ("👥 CON AMIGOS ONLINE", "Creá tu sala, pasales el link por WhatsApp y jueguen 1v1, en parejas o en tríos."),
-        ("🃏 BARAJA CRIOLLA DE 40", "Los 40 naipes dibujados a mano con el estilo litográfico tradicional de pulpería."),
+        ('espada', "TE ENSEÑA A JUGAR", "Escuela interactiva paso a paso con las cartas bravas, el tanteo del envido y cómo mentir."),
+        ('basto', "VS LA COMPUTADORA", "Jugá partidas rápidas en tu celu o compu contra la inteligencia artificial (3 dificultades)."),
+        ('oro', "CON AMIGOS ONLINE", "Creá tu sala, pasales el link por WhatsApp y jueguen 1v1, en parejas o en tríos."),
+        ('copa', "BARAJA CRIOLLA DE 40", "Los 40 naipes dibujados a mano con el estilo litográfico tradicional de pulpería."),
     ]
     
     item_y = feat_y + 88
-    for title_k, desc_k in key_features:
-        # Título en Lora Bold
-        draw.text((feat_x + 28, item_y), title_k, font=font_lora_bold, fill=(254, 240, 138))
+    badge_size = 48
+    
+    for suit_name, title_k, desc_k in key_features:
+        # Generar medallón con el palo de la baraja
+        suit_badge = make_suit_icon(suit_name, target_size=badge_size)
+        story.paste(suit_badge, (feat_x + 24, item_y + 4), suit_badge)
         
-        # Descripción en Lora Regular con wrap automático prolijo
+        # Título en Lora Bold (con sangría para el icono del palo)
+        text_x = feat_x + 24 + badge_size + 16
+        draw.text((text_x, item_y), title_k, font=font_lora_bold, fill=(254, 240, 138))
+        
+        # Descripción en Lora Regular con wrap automático
+        max_desc_w = feat_w - (badge_size + 16 + 48)
         words = desc_k.split(' ')
         line1, line2 = '', ''
         for w in words:
             test_line = (line1 + ' ' + w).strip()
             tb = draw.textbbox((0, 0), test_line, font=font_lora_desc)
-            if (tb[2] - tb[0]) < (feat_w - 55) and not line2:
+            if (tb[2] - tb[0]) < max_desc_w and not line2:
                 line1 = test_line
             else:
                 line2 = (line2 + ' ' + w).strip()
                 
-        draw.text((feat_x + 28, item_y + 36), line1, font=font_lora_desc, fill=(214, 211, 209))
+        draw.text((text_x, item_y + 36), line1, font=font_lora_desc, fill=(214, 211, 209))
         if line2:
-            draw.text((feat_x + 28, item_y + 64), line2, font=font_lora_desc, fill=(214, 211, 209))
+            draw.text((text_x, item_y + 64), line2, font=font_lora_desc, fill=(214, 211, 209))
             
         item_y += 135
 
@@ -253,14 +307,12 @@ def generate_story():
     cta_x = (W - cta_w) // 2
     cta_y = 1695
     
-    # Resplandor verde esmeralda
     cta_glow = Image.new('RGBA', (cta_w + 40, cta_h + 40), (0, 0, 0, 0))
     cg_draw = ImageDraw.Draw(cta_glow)
     cg_draw.rounded_rectangle([10, 10, cta_w + 20, cta_h + 20], radius=34, fill=(16, 185, 129, 160))
     cta_glow = cta_glow.filter(ImageFilter.GaussianBlur(18))
     story.paste(cta_glow, (cta_x - 10, cta_y - 10), cta_glow)
     
-    # Botón CTA en Cinzel Bold
     draw.rounded_rectangle([cta_x, cta_y, cta_x + cta_w, cta_y + cta_h], radius=28, fill=(4, 120, 87), outline=(52, 211, 153), width=3)
     
     cta_label = "👉 ¡TOCÁ EL LINK Y ENTRÁ A LA MESA!"
@@ -268,7 +320,6 @@ def generate_story():
     cl_w = cl_box[2] - cl_box[0]
     draw.text(((W - cl_w) // 2, cta_y + 30), cta_label, font=font_cinzel_cta, fill=(255, 255, 255))
     
-    # Subtexto final Lora
     sub_foot = "100% Web Gratis • Sin Descargas • Jugá en el Celular o PC"
     sf_box = draw.textbbox((0, 0), sub_foot, font=font_lora_bold)
     sf_w = sf_box[2] - sf_box[0]
