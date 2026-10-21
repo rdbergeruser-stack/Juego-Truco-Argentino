@@ -142,18 +142,18 @@ export function RoomLobbyView({
             </div>
 
             {/* Selector de Modalidad */}
-            <div className="flex items-center gap-1 bg-[#120803] p-1 rounded-xl border border-amber-900/60">
+            <div className="flex flex-wrap items-center gap-1 bg-[#120803] p-1 rounded-xl border border-amber-900/60">
               {(['1v1', '2v2', '3v3'] as MultiplayerMode[]).map((m) => (
                 <button
                   key={m}
                   onClick={() => onChangeMode(m)}
-                  className={`px-3 py-1 rounded-lg font-display font-bold transition text-xs ${
+                  className={`flex-1 sm:flex-initial text-center px-2.5 sm:px-3 py-1 rounded-lg font-display font-bold transition text-xs whitespace-nowrap ${
                     lobby.mode === m
                       ? 'bg-amber-600 text-[#140a05] shadow'
                       : 'text-amber-200/60 hover:text-amber-200'
                   }`}
                 >
-                  {m === '1v1' ? '1 vs 1' : m === '2v2' ? '2 vs 2 (Parejas)' : '3 vs 3 (Tríos)'}
+                  {m === '1v1' ? '1 vs 1' : m === '2v2' ? '2 vs 2' : '3 vs 3'}
                 </button>
               ))}
             </div>
