@@ -35,51 +35,125 @@ def add_drop_shadow(img, offset=(8, 14), blur=16, shadow_color=(0, 0, 0, 220)):
     canvas.paste(img, (pad, pad), img)
     return canvas, pad
 
-def make_suit_icon(suit_name, target_size=46):
-    """Genera un medallón circular elegante con la ilustración real de cada palo."""
+_suit_cache = {}
+
+def isolate_suit_drawing(crop_img):
+    """Aísla la ilustración eliminando con precisión el fondo de papel pergamino mediante flood-fill."""
+    img = crop_img.convert('RGB')
+    w, h = img.size
+    
+    corner_samples = [img.getpixel((0, 0)), img.getpixel((w-1, 0)), img.getpixel((0, h-1)), img.getpixel((w-1, h-1))]
+    bg_r = sum(c[0] for c in corner_samples) / 4.0
+    bg_g = sum(c[1] for c in corner_samples) / 4.0
+    bg_b = sum(c[2] for c in corner_samples) / 4.0
+    
+    visited = set()
+    queue = []
+    
+    for x in range(w):
+        queue.append((x, 0))
+        queue.append((x, h-1))
+    for y in range(h):
+        queue.append((0, y))
+        queue.append((w-1, y))
+        
+    mask = Image.new('L', (w, h), 255)
+    
+    def is_bg(x, y):
+        r, g, b = img.getpixel((x, y))
+        dist = ((r - bg_r)**2 + (g - bg_g)**2 + (b - bg_b)**2)**0.5
+        is_light = (r > 195 and g > 180 and b > 140)
+        return dist < 45 or (is_light and abs(r - g) < 30 and (r - b) < 70)
+
+    for q in queue:
+        if q not in visited and is_bg(*q):
+            visited.add(q)
+            
+    idx = 0
+    q_list = list(visited)
+    while idx < len(q_list):
+        cx, cy = q_list[idx]
+        idx += 1
+        mask.putpixel((cx, cy), 0)
+        
+        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nx, ny = cx + dx, cy + dy
+            if 0 <= nx < w and 0 <= ny < h and (nx, ny) not in visited:
+                if is_bg(nx, ny):
+                    visited.add((nx, ny))
+                    q_list.append((nx, ny))
+                    
+    mask = mask.filter(ImageFilter.GaussianBlur(1))
+    res = crop_img.convert('RGBA')
+    res.putalpha(mask)
+    return res
+
+def make_suit_icon(suit_name, target_size=54):
+    """Genera un medallón circular de alta fidelidad con la ilustración auténtica y nítida de cada palo."""
     badge = Image.new('RGBA', (target_size, target_size), (0, 0, 0, 0))
     b_draw = ImageDraw.Draw(badge)
     
-    # Anillo exterior dorado
-    b_draw.ellipse([0, 0, target_size - 1, target_size - 1], fill=(38, 18, 8), outline=(245, 158, 11), width=2)
+    # Anillo exterior repujado en oro viejo y bronce
+    b_draw.ellipse([0, 0, target_size - 1, target_size - 1], fill=(42, 18, 8), outline=(217, 119, 6), width=2)
     # Fondo pergamino interior
     pad = 3
-    b_draw.ellipse([pad, pad, target_size - 1 - pad, target_size - 1 - pad], fill=(245, 237, 224))
+    b_draw.ellipse([pad, pad, target_size - 1 - pad, target_size - 1 - pad], fill=(247, 240, 227))
+    # Filete dorado interior
+    b_draw.ellipse([pad + 1, pad + 1, target_size - 2 - pad, target_size - 2 - pad], outline=(254, 240, 138), width=1)
+    
+    inner_dim = target_size - 10
     
     if suit_name == 'oro':
-        # Moneda de oro
+        # Moneda de oro circular perfecta
         o4 = Image.open('public/cards/oro_4.png')
         coin = o4.crop((190, 210, 370, 390))
-        coin_res = coin.resize((target_size - 8, target_size - 8), Image.Resampling.LANCZOS).convert('RGBA')
-        mask = Image.new('L', (target_size - 8, target_size - 8), 0)
-        ImageDraw.Draw(mask).ellipse([0, 0, target_size - 9, target_size - 9], fill=255)
-        badge.paste(coin_res, (4, 4), mask)
+        coin_res = coin.resize((inner_dim, inner_dim), Image.Resampling.LANCZOS).convert('RGBA')
+        mask = Image.new('L', (inner_dim, inner_dim), 0)
+        ImageDraw.Draw(mask).ellipse([0, 0, inner_dim - 1, inner_dim - 1], fill=255)
+        badge.paste(coin_res, ((target_size - inner_dim) // 2, (target_size - inner_dim) // 2), mask)
         
     elif suit_name == 'copa':
-        # Copa dorada
-        c4 = Image.open('public/cards/copa_4.png')
-        cup = c4.crop((190, 210, 370, 420))
-        cw, ch = 32, 36
-        cup_res = cup.resize((cw, ch), Image.Resampling.LANCZOS).convert('RGBA')
-        badge.paste(cup_res, ((target_size - cw) // 2, (target_size - ch) // 2), cup_res)
+        # Copa dorada aislada sin bordes
+        if 'copa' not in _suit_cache:
+            c4 = Image.open('public/cards/copa_4.png')
+            c_crop = c4.crop((180, 200, 380, 440))
+            _suit_cache['copa'] = isolate_suit_drawing(c_crop)
+        c_iso = _suit_cache['copa']
+        cw, ch = c_iso.size
+        scale = inner_dim / ch
+        nw, nh = int(cw * scale), int(ch * scale)
+        c_res = c_iso.resize((nw, nh), Image.Resampling.LANCZOS)
+        badge.paste(c_res, ((target_size - nw) // 2, (target_size - nh) // 2), c_res)
         
     elif suit_name == 'espada':
-        # Espada cruzada en diagonal
-        e4 = Image.open('public/cards/espada_4.png')
-        sword = e4.crop((185, 185, 315, 495))
-        sword_rot = sword.rotate(45, expand=True, resample=Image.Resampling.BICUBIC)
-        sw, sh = 34, 34
-        sword_res = sword_rot.resize((sw, sh), Image.Resampling.LANCZOS).convert('RGBA')
-        badge.paste(sword_res, ((target_size - sw) // 2, (target_size - sh) // 2), sword_res)
+        # Espada de acero completa extraída del naipe oficial (empuñadura, cruz y hoja)
+        if 'espada' not in _suit_cache:
+            e2 = Image.open('public/cards/espada_2.png')
+            s_crop = e2.crop((245, 148, 395, 1144))
+            _suit_cache['espada'] = isolate_suit_drawing(s_crop)
+        s_iso = _suit_cache['espada']
+        # Inclinada a -40° para aprovechar la diagonal del medallón (hoja apuntando arriba a la derecha)
+        rot = s_iso.rotate(-40, expand=True, resample=Image.Resampling.BICUBIC)
+        rw, rh = rot.size
+        scale = (inner_dim + 4) / max(rw, rh)
+        nw, nh = int(rw * scale), int(rh * scale)
+        s_res = rot.resize((nw, nh), Image.Resampling.LANCZOS)
+        badge.paste(s_res, ((target_size - nw) // 2, (target_size - nh) // 2), s_res)
         
     elif suit_name == 'basto':
-        # Basto cruzado en diagonal
-        b4 = Image.open('public/cards/basto_4.png')
-        club = b4.crop((185, 185, 315, 495))
-        club_rot = club.rotate(-45, expand=True, resample=Image.Resampling.BICUBIC)
-        bw, bh = 34, 34
-        club_res = club_rot.resize((bw, bh), Image.Resampling.LANCZOS).convert('RGBA')
-        badge.paste(club_res, ((target_size - bw) // 2, (target_size - bh) // 2), club_res)
+        # Basto de madera nudosa con hojas verdes extraído del naipe oficial
+        if 'basto' not in _suit_cache:
+            b2 = Image.open('public/cards/basto_2.png')
+            b_crop = b2.crop((175, 148, 375, 1125))
+            _suit_cache['basto'] = isolate_suit_drawing(b_crop)
+        b_iso = _suit_cache['basto']
+        # Inclinado a 40° para aprovechar la diagonal del medallón (cabeza nudosa arriba a la izquierda)
+        rot = b_iso.rotate(40, expand=True, resample=Image.Resampling.BICUBIC)
+        rw, rh = rot.size
+        scale = (inner_dim + 4) / max(rw, rh)
+        nw, nh = int(rw * scale), int(rh * scale)
+        b_res = rot.resize((nw, nh), Image.Resampling.LANCZOS)
+        badge.paste(b_res, ((target_size - nw) // 2, (target_size - nh) // 2), b_res)
         
     return badge
 
@@ -272,7 +346,7 @@ def generate_story():
     ]
     
     item_y = feat_y + 88
-    badge_size = 48
+    badge_size = 54
     
     for suit_name, title_k, desc_k in key_features:
         # Generar medallón con el palo de la baraja
