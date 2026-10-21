@@ -6,10 +6,41 @@ import type {
   PlayerSlot 
 } from '../../types/multiplayer';
 
+/**
+ * Servidores STUN y TURN (OpenRelay Project by Metered)
+ * Indispensables para atravesar Symmetric NAT / CGNAT de redes móviles 4G/5G (Personal, Claro, Movistar, etc.)
+ */
+const ICE_SERVERS: RTCIceServer[] = [
+  // STUN público para resolver IP en redes estándar
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'stun:stun1.l.google.com:19302' },
+  { urls: 'stun:stun2.l.google.com:19302' },
+  { urls: 'stun:stun.cloudflare.com:3478' },
+  // TURN Relay público gratuito (OpenRelay by Metered)
+  // Reenvía tráfico por puertos 80 y 443 (TCP/UDP) cuando el CGNAT de datos móviles bloquea UDP directo
+  {
+    urls: 'turn:openrelay.metered.ca:80',
+    username: 'openrelayproject',
+    credential: 'openrelayproject',
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443',
+    username: 'openrelayproject',
+    credential: 'openrelayproject',
+  },
+  {
+    urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+    username: 'openrelayproject',
+    credential: 'openrelayproject',
+  },
+];
+
 export class PeerNetworkManager {
   private peer: Peer | null = null;
   private connections: Map<string, DataConnection> = new Map();
   private hostConnection: DataConnection | null = null;
+  private heartbeatTimer: any = null;
+
   public myPeerId: string = '';
   public isHost: boolean = false;
   public roomCode: string = '';
@@ -39,10 +70,44 @@ export class PeerNetworkManager {
   }
 
   /**
-   * Obtiene el Peer ID que usamos en el broker de PeerJS
+   * Obtiene el Peer ID normalizado para que coincida siempre,
+   * ya sea que el usuario ingrese '8X2K' o 'TRUCO-8X2K'
    */
-  private static getPeerIdForRoom(roomCode: string): string {
-    return `truco-arg-${roomCode.trim().toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+  public static getPeerIdForRoom(roomCode: string): string {
+    let clean = roomCode.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+    if (!clean.startsWith('truco')) {
+      clean = 'truco' + clean;
+    }
+    return `truco-arg-${clean}`;
+  }
+
+  /**
+   * Heartbeat para mantener el socket de señalización de PeerJS 100% activo.
+   * Evita que el servidor público de PeerJS desconecte la sala tras 45s de inactividad.
+   */
+  private startHeartbeat() {
+    this.stopHeartbeat();
+    this.heartbeatTimer = setInterval(() => {
+      if (this.peer && !this.peer.destroyed) {
+        if (this.peer.disconnected) {
+          console.warn('[PeerNetwork] Reconectando socket de señalización con el servidor...');
+          this.peer.reconnect();
+        } else {
+          // Mantener vivo el websocket con un ping
+          const socket = (this.peer as any).socket;
+          if (socket && socket._socket && socket._socket.readyState === WebSocket.OPEN) {
+            socket._socket.send(JSON.stringify({ type: 'HEARTBEAT' }));
+          }
+        }
+      }
+    }, 15000);
+  }
+
+  private stopHeartbeat() {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
   }
 
   /**
@@ -61,20 +126,17 @@ export class PeerNetworkManager {
 
     return new Promise((resolve, reject) => {
       try {
-        // Inicializamos PeerJS en el servidor de señalización gratuito oficial
         this.peer = new Peer(peerId, {
           debug: 1,
           config: {
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              { urls: 'stun:global.stun.twilio.com:3478' }
-            ]
-          }
+            iceServers: ICE_SERVERS,
+          },
         });
 
         this.peer.on('open', (id) => {
           this.myPeerId = id;
-          
+          this.startHeartbeat();
+
           // Inicializar estado del lobby
           const totalSlots = mode === '1v1' ? 2 : mode === '2v2' ? 4 : 6;
           const slots: (PlayerSlot | null)[] = new Array(totalSlots).fill(null);
@@ -109,14 +171,21 @@ export class PeerNetworkManager {
           this.handleIncomingConnection(conn);
         });
 
+        this.peer.on('disconnected', () => {
+          console.warn('[PeerHost] Desconectado del servidor de señalización, reconectando...');
+          if (this.peer && !this.peer.destroyed) {
+            this.peer.reconnect();
+          }
+        });
+
         this.peer.on('error', (err: any) => {
           console.error('[PeerHost] Error:', err);
           if (err.type === 'unavailable-id') {
-            const msg = 'Ese código de sala ya está en uso. Intentá con otro o unite a la partida.';
+            const msg = 'Ese código de sala ya está en uso. Probá crear otra sala con un código nuevo.';
             if (this.onError) this.onError(msg);
             reject(new Error(msg));
           } else {
-            if (this.onError) this.onError(err.message || 'Error de conexión');
+            if (this.onError) this.onError(err.message || 'Error de conexión.');
             reject(err);
           }
         });
@@ -127,7 +196,7 @@ export class PeerNetworkManager {
   }
 
   /**
-   * Se une como invitado a una sala existente
+   * Se une como invitado a una sala existente (con reintentos automáticos)
    */
   public async joinRoom(roomCode: string, playerName: string): Promise<void> {
     this.isHost = false;
@@ -136,60 +205,81 @@ export class PeerNetworkManager {
 
     return new Promise((resolve, reject) => {
       try {
-        // Conexión anónima del cliente
         this.peer = new Peer({
           debug: 1,
           config: {
-            iceServers: [
-              { urls: 'stun:stun.l.google.com:19302' },
-              { urls: 'stun:global.stun.twilio.com:3478' }
-            ]
-          }
+            iceServers: ICE_SERVERS,
+          },
         });
+
+        let retryCount = 0;
+        const maxRetries = 3;
+        let isConnectedSuccess = false;
 
         this.peer.on('open', (myId) => {
           this.myPeerId = myId;
+          this.startHeartbeat();
           if (!this.peer) return;
 
-          // Conectar con el host
-          const conn = this.peer.connect(hostPeerId, { reliable: true });
-          this.hostConnection = conn;
+          const attemptConnect = () => {
+            if (isConnectedSuccess || !this.peer || this.peer.destroyed) return;
 
-          conn.on('open', () => {
-            if (this.onConnectionOpen) this.onConnectionOpen();
+            console.log(`[Guest] Conectando a sala (intento ${retryCount + 1}/${maxRetries}): ${hostPeerId}`);
+            const conn = this.peer.connect(hostPeerId, {
+              reliable: true,
+            });
+            this.hostConnection = conn;
 
-            // Enviar solicitud de ingreso
-            const joinMsg: NetworkMessage = {
-              type: 'JOIN_REQUEST',
-              playerName: playerName || 'Truquero',
-            };
-            conn.send(joinMsg);
-            resolve();
-          });
+            conn.on('open', () => {
+              isConnectedSuccess = true;
+              if (this.onConnectionOpen) this.onConnectionOpen();
 
-          conn.on('data', (data: any) => {
-            this.handleDataFromHost(data);
-          });
+              // Enviar solicitud de ingreso
+              const joinMsg: NetworkMessage = {
+                type: 'JOIN_REQUEST',
+                playerName: playerName || 'Truquero',
+              };
+              conn.send(joinMsg);
+              resolve();
+            });
 
-          conn.on('close', () => {
-            if (this.onError) this.onError('Se perdió la conexión con el anfitrión de la mesa.');
-          });
+            conn.on('data', (data: any) => {
+              this.handleDataFromHost(data);
+            });
 
-          conn.on('error', (err) => {
-            console.error('[GuestConn] Error:', err);
-            if (this.onError) this.onError('Error al conectar con la sala. Verificá el código.');
+            conn.on('close', () => {
+              if (this.onError) this.onError('Se desconectó la mesa del anfitrión.');
+            });
+
+            conn.on('error', (err) => {
+              console.warn('[GuestConn] Error temporal en intento:', err);
+            });
+          };
+
+          attemptConnect();
+
+          this.peer.on('error', (err: any) => {
+            console.error('[PeerGuest] Error:', err);
+            if (err.type === 'peer-unavailable') {
+              if (retryCount < maxRetries - 1 && !isConnectedSuccess) {
+                retryCount++;
+                console.log(`[Guest] Sala aún no registrada en servidor, reintentando en 1.5s...`);
+                setTimeout(attemptConnect, 1500);
+              } else {
+                const msg = `No se encontró la sala "${roomCode}". Verificá que el anfitrión siga en la sala o que el código sea correcto.`;
+                if (this.onError) this.onError(msg);
+                reject(new Error(msg));
+              }
+            } else {
+              if (this.onError) this.onError(err.message || 'Error de conexión.');
+              reject(err);
+            }
           });
         });
 
-        this.peer.on('error', (err: any) => {
-          console.error('[PeerGuest] Error:', err);
-          if (err.type === 'peer-unavailable') {
-            const msg = `No se encontró la sala "${roomCode}". Verificá que el anfitrión siga conectado.`;
-            if (this.onError) this.onError(msg);
-            reject(new Error(msg));
-          } else {
-            if (this.onError) this.onError(err.message || 'Error de conexión');
-            reject(err);
+        this.peer.on('disconnected', () => {
+          if (this.peer && !this.peer.destroyed) {
+            this.peer.reconnect();
           }
         });
       } catch (err: any) {
@@ -234,7 +324,7 @@ export class PeerNetworkManager {
       if (availableSeat === -1) {
         // Sala llena
         const conn = this.connections.get(peerId);
-        if (conn) {
+        if (conn && conn.open) {
           conn.send({
             type: 'CHAT_MESSAGE',
             text: 'La sala está completa. Esperá a la próxima partida.',
@@ -264,7 +354,6 @@ export class PeerNetworkManager {
     if (msg.type === 'SEAT_SELECT') {
       const targetSeat = msg.seatIndex;
       if (targetSeat >= 0 && targetSeat < this.currentLobby.slots.length) {
-        // Encontrar asiento actual de este peer
         const currentSeat = this.currentLobby.slots.findIndex(s => s?.id === peerId);
         if (currentSeat !== -1 && this.currentLobby.slots[targetSeat] === null) {
           const player = this.currentLobby.slots[currentSeat]!;
@@ -318,7 +407,6 @@ export class PeerNetworkManager {
     this.currentLobby.slots.forEach(slot => {
       if (slot && slot.team === sender.team && slot.id !== senderPeerId) {
         if (slot.isHost) {
-          // El host es compañero
           if (this.onMessage) this.onMessage(senaMsg, senderPeerId);
         } else {
           const conn = this.connections.get(slot.id);
@@ -374,6 +462,17 @@ export class PeerNetworkManager {
   }
 
   /**
+   * Envía un mensaje a un cliente específico por su peerId
+   */
+  public sendToPeer(peerId: string, msg: NetworkMessage) {
+    if (!this.isHost) return;
+    const conn = this.connections.get(peerId);
+    if (conn && conn.open) {
+      conn.send(msg);
+    }
+  }
+
+  /**
    * Envía un mensaje a todos los clientes conectados
    */
   public broadcast(msg: NetworkMessage) {
@@ -402,7 +501,6 @@ export class PeerNetworkManager {
     const totalSlots = mode === '1v1' ? 2 : mode === '2v2' ? 4 : 6;
     const newSlots: (PlayerSlot | null)[] = new Array(totalSlots).fill(null);
 
-    // Mantener jugadores actuales hasta el límite
     this.currentLobby.slots.forEach((slot, idx) => {
       if (slot && idx < totalSlots) {
         slot.seatIndex = idx;
@@ -430,6 +528,7 @@ export class PeerNetworkManager {
    * Cierra todas las conexiones y destruye el Peer
    */
   public destroy() {
+    this.stopHeartbeat();
     this.connections.forEach(conn => conn.close());
     this.connections.clear();
     if (this.hostConnection) {

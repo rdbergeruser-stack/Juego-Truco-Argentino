@@ -151,3 +151,4 @@ export type NetworkMessage =
   | { type: 'SENA_RECEIVED'; sena: SenaType; fromPlayerName: string; fromSeat: number }
   | { type: 'CHAT_MESSAGE'; text: string; fromSeat: number; fromName: string; isTeamOnly?: boolean }
   | { type: 'KICK_PLAYER'; seatIndex: number };
+

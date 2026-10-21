@@ -257,7 +257,7 @@ export function MultiplayerView({ onBackToMenu, onOpenHierarchy }: MultiplayerVi
           state: fullState,
           yourHand: clientHand,
         };
-        manager.broadcast(syncMsg);
+        manager.sendToPeer(slot.id, syncMsg);
       }
     });
   };

@@ -35,6 +35,14 @@ export function RoomLobbyView({
   onLeaveRoom,
 }: RoomLobbyViewProps) {
   const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
+
+  const isLocalhost = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname.startsWith('192.168.') ||
+    window.location.hostname.startsWith('10.')
+  );
 
   // Generar enlace completo para compartir
   const shareUrl = `${window.location.origin}${window.location.pathname}?sala=${lobby.roomCode}`;
@@ -45,8 +53,14 @@ export function RoomLobbyView({
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const copyCodeOnly = () => {
+    navigator.clipboard.writeText(lobby.roomCode);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2500);
+  };
+
   const shareViaWhatsApp = () => {
-    const text = `¡Vení a jugar un Truco Criollo conmigo! Entrá a este enlace para unirte a la mesa: ${shareUrl}`;
+    const text = `¡Vení a jugar un Truco Criollo conmigo! Entrá con el código ${lobby.roomCode} o abrí este enlace: ${shareUrl}`;
     window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
   };
 
@@ -82,13 +96,21 @@ export function RoomLobbyView({
           </div>
 
           {/* Botones de Compartir */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
             <button
               onClick={copyToClipboard}
               className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#3a1f11] hover:bg-[#4d2917] text-amber-200 font-display font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl border border-amber-600/50 shadow-md transition active:scale-95"
             >
               {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
               <span>{copied ? '¡Enlace copiado!' : 'Copiar enlace'}</span>
+            </button>
+            <button
+              onClick={copyCodeOnly}
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-[#251208] hover:bg-[#351a0c] text-amber-300 font-display font-bold text-xs sm:text-sm px-3 py-2.5 rounded-xl border border-amber-700/50 shadow-md transition active:scale-95"
+              title="Copiar únicamente el código de sala"
+            >
+              {copiedCode ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              <span>{copiedCode ? 'Código copiado' : 'Copiar código'}</span>
             </button>
             <button
               onClick={shareViaWhatsApp}
@@ -100,6 +122,16 @@ export function RoomLobbyView({
             </button>
           </div>
         </div>
+
+        {/* Aviso amigable si se está probando en localhost con celular */}
+        {isLocalhost && (
+          <div className="mt-3 p-2.5 rounded-xl bg-amber-950/40 border border-amber-700/40 text-[11px] text-amber-200/80 font-body flex items-start gap-2">
+            <span className="text-sm">💡</span>
+            <p>
+              <strong>¿Jugás con alguien en otra red o celular con datos (4G/5G)?</strong> Pasale el código <span className="text-amber-400 font-mono font-bold">{lobby.roomCode}</span> para que entre desde la web pública en producción (Vercel) o compartile el link directo. ¡El servidor de enlace TURN ahora conecta celulares y PCs sin importar la red!
+            </p>
+          </div>
+        )}
 
         {/* Ajustes de Partida para el Host */}
         {isHost && (
