@@ -175,31 +175,40 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
           </div>
         </div>
 
-        {/* LA MESA VIRTUAL DEL DESAFÍO (Paño Verde de Fieltro con Marco de Madera) */}
+        {/* LA MESA VIRTUAL DEL DESAFÍO (Mantel de Bodegón Criollo a Cuadros Rojos y Blancos) */}
         <div
           className="rounded-2xl sm:rounded-3xl border-[5px] sm:border-[8px] border-[#291408] p-3 sm:p-6 shadow-2xl space-y-4 relative overflow-hidden ring-1 ring-amber-600/40"
           style={{
-            background: 'radial-gradient(ellipse at 50% 50%, #0d5435 0%, #063c26 55%, #022416 100%)',
-            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.7), inset 0 0 40px rgba(0, 0, 0, 0.8)',
+            backgroundColor: '#faf5ea',
+            backgroundImage: `
+              radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(35, 15, 6, 0.35) 80%, rgba(20, 8, 3, 0.7) 100%),
+              repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px),
+              linear-gradient(90deg, rgba(185, 28, 28, 0.78) 50%, transparent 50%),
+              linear-gradient(rgba(185, 28, 28, 0.78) 50%, transparent 50%)
+            `,
+            backgroundSize: '100% 100%, 8px 8px, 48px 48px, 48px 48px',
+            boxShadow: '0 20px 40px -10px rgba(0, 0, 0, 0.8), inset 0 0 40px rgba(0, 0, 0, 0.6)',
           }}
         >
           {/* Remaches de bronce en esquinas */}
-          <div className="absolute top-1.5 left-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
-          <div className="absolute top-1.5 right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
-          <div className="absolute bottom-1.5 left-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
-          <div className="absolute bottom-1.5 right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none" />
+          <div className="absolute top-1.5 left-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none z-20" />
+          <div className="absolute top-1.5 right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none z-20" />
+          <div className="absolute bottom-1.5 left-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none z-20" />
+          <div className="absolute bottom-1.5 right-1.5 w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-amber-400 border border-amber-800 shadow pointer-events-none z-20" />
 
           {/* Historial o Ronda actual */}
-          <div className="flex items-center justify-between text-[11px] text-amber-200/90 border-b border-emerald-800/40 pb-2">
+          <div className="flex items-center justify-between text-[11px] text-amber-200/90 border-b border-amber-900/60 pb-2">
             <div className="flex items-center gap-1.5 font-mono">
-              <span className="bg-emerald-900/80 px-2 py-0.5 rounded border border-emerald-600/40">
+              <span className="bg-[#1a0e08]/90 px-2.5 py-0.5 rounded-md border border-amber-600/50 shadow">
                 Ronda {scenario.roundInfo.round} de 3
               </span>
-              <span>{scenario.roundInfo.isPlayerMano ? '• Sos MANO ✋' : '• Sos PIE'}</span>
+              <span className="bg-[#1a0e08]/80 px-2 py-0.5 rounded-md border border-amber-800/40">
+                {scenario.roundInfo.isPlayerMano ? 'Sos MANO ✋' : 'Sos PIE'}
+              </span>
             </div>
 
             {scenario.roundInfo.tricksHistory && (
-              <span className="text-[10px] text-amber-300/80 italic hidden xs:inline">
+              <span className="text-[10px] text-amber-200 bg-[#1a0e08]/80 px-2 py-0.5 rounded border border-amber-800/40 italic hidden xs:inline">
                 {scenario.roundInfo.tricksHistory[0].description}
               </span>
             )}
@@ -207,28 +216,28 @@ export const GuidedSimulator: React.FC<GuidedSimulatorProps> = ({ onStartGame })
 
           {/* CARTA DEL RIVAL EN LA MESA */}
           <div className="flex flex-col items-center justify-center py-2">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-amber-300/70 mb-1.5">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-amber-200 bg-[#1a0e08]/85 px-2.5 py-0.5 rounded-full border border-amber-700/50 mb-2 shadow">
               {scenario.tableContext.opponentActionText || 'La mesa'}
             </span>
 
             {scenario.tableContext.opponentCard ? (
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center drop-shadow-2xl">
                 <CardView card={scenario.tableContext.opponentCard} size="md" />
-                <span className="mt-1 text-[11px] font-bold text-stone-300">
+                <span className="mt-1.5 text-[11px] font-bold text-amber-100 bg-[#1a0e08]/85 px-2 py-0.5 rounded-md border border-amber-800/40">
                   Carta del Rival: {scenario.tableContext.opponentCard.name}
                 </span>
               </div>
             ) : (
-              <div className="w-20 h-28 sm:w-24 sm:h-36 rounded-xl border-2 border-dashed border-emerald-600/40 flex flex-col items-center justify-center text-center p-2 text-emerald-400/80">
-                <span className="text-xl">🪑</span>
-                <span className="text-[10px] font-bold mt-1">Paño Libre</span>
-                <span className="text-[9px] text-emerald-300/60">Te toca salir</span>
+              <div className="w-[6rem] h-[9.25rem] sm:w-[7.5rem] sm:h-[11.25rem] rounded-2xl border-2 border-dashed border-amber-600/60 flex flex-col items-center justify-center text-center p-2 text-amber-300/80 bg-black/45 shadow-inner backdrop-blur-sm">
+                <span className="text-2xl">🪑</span>
+                <span className="text-[11px] font-bold mt-1">Mesa Libre</span>
+                <span className="text-[9px] text-amber-200/60">Te toca salir</span>
               </div>
             )}
           </div>
 
           {/* TUS CARTAS EN MANO (INTERACTIVAS: Tocá para jugar) */}
-          <div className="pt-2 border-t border-emerald-800/40 flex flex-col items-center">
+          <div className="pt-2 border-t border-amber-900/60 flex flex-col items-center">
             <span className="text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider text-amber-300 mb-2">
               👇 TOCÁ LA CARTA O JUGADA QUE HARÍAS VOS 👇
             </span>

@@ -25,11 +25,11 @@ export const CardView: React.FC<CardViewProps> = ({
 }) => {
   const [imgLoadError, setImgLoadError] = useState(false);
 
-  // Dimensiones responsivas con aspecto 1.55 (proporción clásica de naipe español)
+  // Dimensiones responsivas aumentadas un 25% con aspecto 1.54 (proporción clásica de naipe español)
   const sizeClasses = {
-    sm: 'w-[3.2rem] h-[4.9rem] xs:w-14 xs:h-22 sm:w-16 sm:h-24 text-[10px] sm:text-xs',
-    md: 'w-[4.8rem] h-[7.4rem] xs:w-[5.2rem] xs:h-[8rem] sm:w-24 sm:h-36 text-xs sm:text-sm',
-    lg: 'w-24 h-36 sm:w-32 sm:h-48 text-sm sm:text-base',
+    sm: 'w-[4rem] h-[6.15rem] xs:w-[4.4rem] xs:h-[6.9rem] sm:w-20 sm:h-[7.5rem] text-xs sm:text-sm',
+    md: 'w-[6rem] h-[9.25rem] xs:w-[6.5rem] xs:h-[10rem] sm:w-[7.5rem] sm:h-[11.25rem] text-sm sm:text-base',
+    lg: 'w-[7.5rem] h-[11.25rem] sm:w-40 sm:h-[15rem] text-base sm:text-lg',
   }[size];
 
   // DORSO DEL NAIPE (Diseño tradicional de baraja española de campo con desgaste)

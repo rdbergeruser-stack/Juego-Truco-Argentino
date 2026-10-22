@@ -155,8 +155,20 @@ export function MultiplayerGameBoard({
         </div>
       </div>
 
-      {/* Mesa de Paño Verde de la Pulpería */}
-      <div className="relative min-h-[420px] sm:min-h-[480px] bg-gradient-to-b from-[#14532d] via-[#166534] to-[#14532d] rounded-3xl border-8 border-[#3b1d11] shadow-[inset_0_0_80px_rgba(0,0,0,0.8),0_20px_50px_rgba(0,0,0,0.9)] p-4 flex flex-col justify-between overflow-hidden">
+      {/* Mesa de Truco: Mantel de Bodegón Criollo a cuadros rojos y blancos */}
+      <div
+        className="relative min-h-[420px] sm:min-h-[480px] rounded-3xl border-8 border-[#3b1d11] shadow-[inset_0_0_80px_rgba(0,0,0,0.8),0_20px_50px_rgba(0,0,0,0.9)] p-4 flex flex-col justify-between overflow-hidden"
+        style={{
+          backgroundColor: '#faf5ea',
+          backgroundImage: `
+            radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(35, 15, 6, 0.35) 80%, rgba(20, 8, 3, 0.7) 100%),
+            repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px),
+            linear-gradient(90deg, rgba(185, 28, 28, 0.78) 50%, transparent 50%),
+            linear-gradient(rgba(185, 28, 28, 0.78) 50%, transparent 50%)
+          `,
+          backgroundSize: '100% 100%, 8px 8px, 48px 48px, 48px 48px',
+        }}
+      >
         {/* Adorno Central de Cuero y Letras Criollas */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-15">
           <span className="font-display font-black text-7xl sm:text-9xl tracking-widest text-[#fbf3df]">
@@ -211,8 +223,8 @@ export function MultiplayerGameBoard({
         {/* CENTRO DE LA MESA: CARTAS JUGADAS */}
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 my-auto z-10 min-h-[140px]">
           {gameState.playedCards.length === 0 ? (
-            <div className="text-xs font-body italic text-emerald-200/50 text-center">
-              Las cartas jugadas en la mano aparecerán acá en el centro del paño.
+            <div className="text-xs font-body italic text-stone-200/80 bg-black/55 px-4 py-2 rounded-xl backdrop-blur-sm border border-amber-800/40 text-center shadow-lg">
+              Las cartas jugadas en la mano aparecerán acá en el centro de la mesa.
             </div>
           ) : (
             gameState.playedCards.map((pc, idx) => (
@@ -220,7 +232,7 @@ export function MultiplayerGameBoard({
                 <span className="text-[10px] font-display font-bold text-amber-200 bg-black/60 px-2 py-0.5 rounded-full border border-amber-700/40">
                   {pc.playerName}
                 </span>
-                <div className="w-20 sm:w-24">
+                <div className="w-24 sm:w-28 drop-shadow-xl">
                   <CardView card={pc.card} size="sm" animatePlay />
                 </div>
               </div>

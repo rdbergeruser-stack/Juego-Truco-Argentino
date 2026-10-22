@@ -766,28 +766,26 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
       </div>
 
-      {/* MESA DE TRUCO (Paño verde tradicional de fieltro con marco de caoba y remaches de bronce) */}
+      {/* MESA DE TRUCO (Mantel de Bodegón Criollo a cuadros rojos y blancos con marco de caoba rústica) */}
       <div
-        className="my-2 sm:my-4 max-w-5xl mx-auto w-full flex-1 rounded-2xl sm:rounded-3xl border-[6px] sm:border-[10px] border-[#291408] shadow-2xl p-2.5 sm:p-4 md:p-8 flex flex-col justify-between relative overflow-hidden ring-1 ring-amber-600/50"
+        className="my-2 sm:my-4 max-w-5xl mx-auto w-full flex-1 rounded-2xl sm:rounded-3xl border-[6px] sm:border-[10px] border-[#291408] shadow-2xl p-2.5 sm:p-4 md:p-8 flex flex-col justify-between relative overflow-hidden ring-2 ring-amber-700/60"
         style={{
-          background: 'radial-gradient(ellipse at 50% 50%, #0d5435 0%, #063c26 55%, #022416 100%)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 50px rgba(0, 0, 0, 0.85)',
+          backgroundColor: '#faf5ea',
+          backgroundImage: `
+            radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(35, 15, 6, 0.3) 80%, rgba(20, 8, 3, 0.65) 100%),
+            repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 4px),
+            linear-gradient(90deg, rgba(185, 28, 28, 0.78) 50%, transparent 50%),
+            linear-gradient(rgba(185, 28, 28, 0.78) 50%, transparent 50%)
+          `,
+          backgroundSize: '100% 100%, 8px 8px, 48px 48px, 48px 48px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.85), inset 0 0 50px rgba(0, 0, 0, 0.6)',
         }}
       >
         {/* Remaches de bronce pulido en las 4 esquinas de la mesa de madera */}
-        <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
-        <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
-        <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
-        <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none" />
-
-        {/* Textura de paño de fieltro sutil */}
-        <div
-          className="absolute inset-0 opacity-[0.07] pointer-events-none"
-          style={{
-            backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)',
-            backgroundSize: '16px 16px',
-          }}
-        />
+        <div className="absolute top-1.5 left-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none z-20" />
+        <div className="absolute top-1.5 right-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none z-20" />
+        <div className="absolute bottom-1.5 left-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none z-20" />
+        <div className="absolute bottom-1.5 right-1.5 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-gradient-to-br from-amber-300 via-amber-500 to-amber-700 border border-amber-800 shadow-md pointer-events-none z-20" />
 
         {/* Cartel Flotante Central de Avisos */}
         {centerBanner && (
@@ -798,7 +796,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
         {/* ZONA OPONENTE (PC) */}
         <div className="relative z-10 flex flex-col items-center">
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 bg-[#1c0f08]/90 backdrop-blur-md px-3 sm:px-4 py-1.5 sm:py-2 rounded-2xl border border-amber-700/60 shadow-xl">
             <div className="relative">
               <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-stone-900 border-2 border-amber-600/70 flex items-center justify-center text-xl sm:text-2xl shadow-lg">
                 {diffLabels[settings.difficulty].avatar}
@@ -833,7 +831,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           </div>
 
           {/* Cartas de la PC (Boca abajo) */}
-          <div className="flex gap-1.5 sm:gap-2 mt-2">
+          <div className="flex gap-1.5 sm:gap-2 mt-2 drop-shadow-xl">
             {opponentHand.map((_, idx) => (
               <CardView key={`opp-${idx}`} faceDown={true} size="sm" />
             ))}
@@ -841,7 +839,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
 
         {/* CENTRO DE LA MESA: CARTAS TIRADAS POR RONDA (1, 2, 3) */}
-        <div className="relative z-10 my-2 sm:my-4 flex items-center justify-center gap-1.5 xs:gap-3 sm:gap-6 md:gap-8 min-h-[130px] sm:min-h-[160px]">
+        <div className="relative z-10 my-2 sm:my-3 flex items-center justify-center gap-2 xs:gap-3.5 sm:gap-6 md:gap-8 min-h-[160px] xs:min-h-[185px] sm:min-h-[225px]">
           {[1, 2, 3].map(roundNum => {
             const trick = tableTricks.find(t => t.round === roundNum);
             const isCurrent = currentRound === roundNum;
@@ -851,32 +849,32 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             return (
               <div
                 key={roundNum}
-                className={`flex flex-col items-center p-1 sm:p-2 rounded-xl sm:rounded-2xl border transition-all ${
+                className={`flex flex-col items-center p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border transition-all ${
                   isCurrent
-                    ? 'bg-emerald-950/40 border-amber-500/50 shadow-lg ring-1 ring-amber-500/30'
-                    : 'bg-emerald-950/20 border-emerald-800/30 opacity-80'
+                    ? 'bg-[#1a0e08]/90 border-amber-500/70 shadow-2xl ring-2 ring-amber-500/30 backdrop-blur-md'
+                    : 'bg-[#140a05]/80 border-amber-900/40 opacity-85 backdrop-blur-sm'
                 }`}
               >
-                <span className="text-[8px] sm:text-[10px] font-mono font-bold uppercase tracking-wider text-amber-300/80 mb-0.5 sm:mb-1">
+                <span className="text-[9px] sm:text-[11px] font-mono font-black uppercase tracking-wider text-amber-300 mb-1">
                   {roundNum === 1 ? '1ra' : roundNum === 2 ? '2da' : '3ra'}
                 </span>
 
-                <div className="flex flex-col gap-1 sm:gap-2 items-center">
+                <div className="flex flex-col gap-1.5 sm:gap-2 items-center">
                   {/* Carta del rival */}
-                  <div className="w-11 h-16 sm:w-16 sm:h-24 flex items-center justify-center border border-dashed border-emerald-700/50 rounded-lg sm:rounded-xl bg-black/10">
-                    {oCard ? <CardView card={oCard} size="sm" /> : <span className="text-[8px] sm:text-[10px] text-emerald-600">Rival</span>}
+                  <div className="w-[4rem] h-[6.15rem] xs:w-[4.4rem] xs:h-[6.9rem] sm:w-20 sm:h-[7.5rem] flex items-center justify-center border-2 border-dashed border-amber-700/50 rounded-xl bg-black/40 shadow-inner">
+                    {oCard ? <CardView card={oCard} size="sm" /> : <span className="text-[9px] sm:text-xs text-amber-300/50 font-serif font-bold">Rival</span>}
                   </div>
 
                   {/* Carta del jugador */}
-                  <div className="w-11 h-16 sm:w-16 sm:h-24 flex items-center justify-center border border-dashed border-emerald-700/50 rounded-lg sm:rounded-xl bg-black/10">
-                    {pCard ? <CardView card={pCard} size="sm" /> : <span className="text-[8px] sm:text-[10px] text-emerald-600">Vos</span>}
+                  <div className="w-[4rem] h-[6.15rem] xs:w-[4.4rem] xs:h-[6.9rem] sm:w-20 sm:h-[7.5rem] flex items-center justify-center border-2 border-dashed border-amber-700/50 rounded-xl bg-black/40 shadow-inner">
+                    {pCard ? <CardView card={pCard} size="sm" /> : <span className="text-[9px] sm:text-xs text-amber-300/50 font-serif font-bold">Vos</span>}
                   </div>
                 </div>
 
                 {/* Resultado de la ronda */}
                 {trick && (
                   <span
-                    className={`mt-1 text-[8px] sm:text-[10px] font-black px-1 sm:px-1.5 py-0.2 rounded shadow ${
+                    className={`mt-1.5 text-[8px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded shadow-lg ${
                       trick.winner === 'player'
                         ? 'bg-amber-500 text-stone-950'
                         : trick.winner === 'opponent'
@@ -902,7 +900,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           )}
 
           {/* Cartas del Jugador */}
-          <div className="flex gap-1.5 xs:gap-3 sm:gap-4 items-end justify-center">
+          <div className="flex gap-2 xs:gap-3.5 sm:gap-5 items-end justify-center drop-shadow-2xl">
             {playerHand.map(card => {
               const isSelected = selectedCardId === card.id;
               const canPlay = currentTurn === 'player' && !pendingCall && !handEnded && !gameWinner && !roundPlayerCard;
@@ -911,7 +909,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               return (
                 <div key={card.id} className="relative touch-manipulation">
                   {isRecommended && canPlay && (
-                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 text-[7px] sm:text-[9px] font-black px-1.5 py-0.2 rounded-full shadow-lg border border-amber-200 whitespace-nowrap z-30 animate-pulse flex items-center gap-0.5">
+                    <span className="absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 to-amber-500 text-stone-950 text-[8px] sm:text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg border border-amber-200 whitespace-nowrap z-30 animate-pulse flex items-center gap-0.5">
                       <span>🤠</span>
                       <span>SUGERIDA</span>
                     </span>
@@ -930,7 +928,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                   {canPlay && (
                     <button
                       onClick={() => handlePlayerPlayCard(card)}
-                      className={`absolute -bottom-2 sm:-bottom-3 left-1/2 -translate-x-1/2 font-black text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full shadow transition touch-manipulation active:scale-95 z-20 ${
+                      className={`absolute -bottom-2.5 sm:-bottom-3.5 left-1/2 -translate-x-1/2 font-black text-[10px] sm:text-xs px-2.5 sm:px-3.5 py-0.5 rounded-full shadow-lg transition touch-manipulation active:scale-95 z-20 ${
                         isRecommended
                           ? 'bg-amber-400 hover:bg-amber-300 text-stone-950 ring-2 ring-amber-300'
                           : 'bg-amber-500 hover:bg-amber-400 text-stone-950'
@@ -944,7 +942,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             })}
           </div>
 
-          <div className="flex items-center gap-1.5 mt-2.5 sm:mt-3 text-[10px] sm:text-xs text-amber-200/80">
+          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-amber-200/90 bg-[#180b05]/90 backdrop-blur-md px-3 sm:px-4 py-1 sm:py-1.5 rounded-full border border-amber-800/60 shadow-lg">
             {handMano === 'player' && (
               <span className="bg-amber-500 text-stone-950 text-[9px] sm:text-[10px] font-black px-1.5 py-0.2 rounded-full shadow">
                 SOS MANO ✋
