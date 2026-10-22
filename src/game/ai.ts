@@ -80,6 +80,9 @@ export function makeAIDecision(ctx: AIContext): AIDecision {
     }
 
     if (pendingCall.includes('envido')) {
+      if (aiHasFlor) {
+        return { action: 'cantar_flor', voiceLine: '¡FLOR! ¡Mi flor anula el envido!' };
+      }
       const score = envidoInfo.score;
       if (difficulty === 'easy') {
         if (score >= 28) return { action: 'quiero', voiceLine: '¡Quiero con ganas!' };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import type { Card, DifficultyLevel, GameSettings, PlayerRole, TrickResult, TrucoChantLevel } from '../types/truco';
 import { createDeck, dealCards } from '../game/deck';
-import { calculateEnvido, hasFlor, resolveEnvidoDuel } from '../game/envido';
+import { calculateEnvido, calculateFlor, hasFlor, resolveEnvidoDuel } from '../game/envido';
 import { checkHandWinner, evaluateTrick, getTrucoPoints, getTrucoRefusedPoints } from '../game/trucoLogic';
 import { makeAIDecision } from '../game/ai';
 import { getMentorAdvice } from '../game/mentor';
@@ -51,7 +51,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   // Canto pendiente al que hay que responder
   // ej: 'envido', 'real_envido', 'falta_envido', 'truco', 'retruco', 'vale_cuatro', 'flor'
   const [pendingCall, setPendingCall] = useState<string | null>(null);
-  const [callInitiator, setCallInitiator] = useState<PlayerRole | null>(null);
 
   // Registro de envidos encadenados para calcular puntos finales
   const [envidoChain, setEnvidoChain] = useState<string[]>([]);
@@ -72,12 +71,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const [handEnded, setHandEnded] = useState<boolean>(false);
   const [handEndMessage, setHandEndMessage] = useState<string>('');
   const [gameWinner, setGameWinner] = useState<PlayerRole | null>(null);
+  const [matchEndReason, setMatchEndReason] = useState<string>('');
 
   // Referencia para timeouts
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Iniciar una nueva mano
   const startNewHand = (nextMano: PlayerRole) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+
     const deck = createDeck();
     const dealt = dealCards(deck);
 
@@ -92,7 +97,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     setTrucoLevel('none');
     setTrucoChantedBy(undefined);
     setPendingCall(null);
-    setCallInitiator(null);
     setEnvidoChain([]);
 
     setRoundPlayerCard(null);
@@ -110,9 +114,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   // Iniciar partido desde cero
   const restartMatch = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
     setPlayerScore(0);
     setOpponentScore(0);
     setGameWinner(null);
+    setMatchEndReason('');
     startNewHand('player');
   };
 
@@ -130,11 +139,17 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       setGameWinner('player');
       sound.playWinFanfare();
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      if (!handEnded) {
+        setMatchEndReason(`¡Partida ganada con los tantos! En el Truco, el Envido y la Flor se cobran primero: al llegar a los ${settings.targetPoints} puntos, el partido se gana inmediatamente sin necesidad de jugar las cartas restantes.`);
+      }
     } else if (opponentScore >= settings.targetPoints && !gameWinner) {
       setGameWinner('opponent');
       sound.playFold();
+      if (!handEnded) {
+        setMatchEndReason(`La PC alcanzó los ${settings.targetPoints} puntos con los tantos de Envido/Flor y gana la partida en este instante.`);
+      }
     }
-  }, [playerScore, opponentScore, settings.targetPoints, gameWinner]);
+  }, [playerScore, opponentScore, settings.targetPoints, gameWinner, handEnded]);
 
   // Manejo del turno de la IA
   useEffect(() => {
@@ -221,6 +236,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   // Opponent tira una carta
   const playOpponentCard = (card: Card) => {
+    if (roundOpponentCard) return; // Evita que la IA tire dos cartas en una misma ronda
     sound.playCard();
     setOpponentHand(prev => prev.filter(c => c.id !== card.id));
     setRoundOpponentCard(card);
@@ -236,7 +252,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
 
   // Jugador tira una carta
   const handlePlayerPlayCard = (card: Card) => {
-    if (currentTurn !== 'player' || pendingCall) return;
+    if (currentTurn !== 'player' || pendingCall || roundPlayerCard || handEnded || gameWinner) return;
 
     sound.playCard();
     setPlayerHand(prev => prev.filter(c => c.id !== card.id));
@@ -317,7 +333,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   // JUGADOR CANTA ALGO
   const handlePlayerChant = (chant: string) => {
     sound.playChantTrumpet();
-    setCallInitiator('player');
     setPendingCall(chant);
 
     const labels: Record<string, string> = {
@@ -355,7 +370,6 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   // IA CANTA ALGO
   const handleOpponentChant = (chant: string) => {
     sound.playChantTrumpet();
-    setCallInitiator('opponent');
     setPendingCall(chant);
 
     if (chant.includes('envido')) {
@@ -377,13 +391,95 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     setCurrentTurn('player');
   };
 
+  // Determina a quién le corresponde tirar carta en el estado actual de la mano
+  const determineTurnForCardPlay = (): PlayerRole => {
+    // Si en la ronda actual ya tiró el jugador y no la PC: le toca a la PC responder
+    if (roundPlayerCard && !roundOpponentCard) {
+      return 'opponent';
+    }
+    // Si en la ronda actual ya tiró la PC y no el jugador: le toca al jugador responder
+    if (roundOpponentCard && !roundPlayerCard) {
+      return 'player';
+    }
+    // Si nadie tiró en esta ronda:
+    if (currentRound === 1) {
+      return handMano;
+    }
+    // En ronda 2 o 3, sale quien ganó la ronda anterior (o la mano si hubo parda)
+    const prevTrick = tableTricks[tableTricks.length - 1];
+    if (prevTrick) {
+      if (prevTrick.winner === 'player') return 'player';
+      if (prevTrick.winner === 'opponent') return 'opponent';
+      return handMano;
+    }
+    return handMano;
+  };
+
+  // Duelo de Flores (Contraflor: ambos jugadores tienen Flor)
+  const resolveFlorShowdown = (_initiator: PlayerRole) => {
+    const pFlor = calculateFlor(playerHand);
+    const oFlor = calculateFlor(opponentHand);
+    const pts = 6; // Contraflor tradicional vale 6 puntos
+
+    sound.playWinFanfare();
+
+    let winner: PlayerRole;
+    if (pFlor.score > oFlor.score) {
+      winner = 'player';
+    } else if (oFlor.score > pFlor.score) {
+      winner = 'opponent';
+    } else {
+      winner = handMano; // Empate en tantos: gana la Mano
+    }
+
+    if (winner === 'player') {
+      setPlayerScore(prev => prev + pts);
+      setCenterBanner(`¡CONTRAFLOR! Ganaste con ${pFlor.score} frente a ${oFlor.score} (+${pts} pts)`);
+    } else {
+      setOpponentScore(prev => prev + pts);
+      setCenterBanner(`¡CONTRAFLOR! La PC ganó con ${oFlor.score} frente a ${pFlor.score} (+${pts} pts)`);
+    }
+
+    setEnvidoDone(true);
+    setPendingCall(null);
+    setTimeout(() => setCenterBanner(null), 3500);
+
+    const nextTurn = determineTurnForCardPlay();
+    setCurrentTurn(nextTurn);
+    if (nextTurn === 'opponent') {
+      timerRef.current = setTimeout(() => {
+        executeAITurn();
+      }, 1500);
+    }
+  };
+
   // IA CANTA FLOR
   const handleOpponentFlor = () => {
     sound.playWinFanfare();
-    setOpponentScore(prev => prev + 3);
-    setEnvidoDone(true);
-    setCenterBanner('¡El rival cantó Flor! (+3 puntos)');
-    setTimeout(() => setCenterBanner(null), 3000);
+    const hasPlayerFlor = settings.withFlor && hasFlor(playerHand);
+
+    if (hasPlayerFlor) {
+      resolveFlorShowdown('opponent');
+    } else {
+      const pts = 3;
+      setOpponentScore(prev => prev + pts);
+      setEnvidoDone(true);
+      setPendingCall(null);
+      setOpponentBubble('¡FLOR DEL PAGO!');
+      setCenterBanner('¡El rival cantó Flor! (+3 puntos)');
+      setTimeout(() => {
+        setOpponentBubble(null);
+        setCenterBanner(null);
+      }, 3000);
+
+      const nextTurn = determineTurnForCardPlay();
+      setCurrentTurn(nextTurn);
+      if (nextTurn === 'opponent') {
+        timerRef.current = setTimeout(() => {
+          executeAITurn();
+        }, 1300);
+      }
+    }
   };
 
   // JUGADOR RESPONDE AL CANTO (QUIERO / NO QUIERO)
@@ -401,7 +497,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
       } else {
         // Truco aceptado
         setPendingCall(null);
-        setCurrentTurn(callInitiator === 'player' ? 'opponent' : 'player');
+        const nextTurn = determineTurnForCardPlay();
+        setCurrentTurn(nextTurn);
+        if (nextTurn === 'opponent') {
+          timerRef.current = setTimeout(() => {
+            executeAITurn();
+          }, 1000);
+        }
       }
     } else {
       // NO QUIERO
@@ -417,7 +519,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         setPendingCall(null);
         setCenterBanner(`No quisiste el envido. La PC suma +${points} pt.`);
         setTimeout(() => setCenterBanner(null), 2500);
-        setCurrentTurn(handMano);
+
+        const nextTurn = determineTurnForCardPlay();
+        setCurrentTurn(nextTurn);
+        if (nextTurn === 'opponent') {
+          timerRef.current = setTimeout(() => {
+            executeAITurn();
+          }, 1200);
+        }
       } else {
         // No quiero en Truco: termina la mano inmediatamente para el que cantó
         const refusedPoints = getTrucoRefusedPoints(trucoLevel);
@@ -441,7 +550,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         resolveEnvidoShowdown();
       } else {
         setPendingCall(null);
-        setCurrentTurn(callInitiator === 'opponent' ? 'player' : 'opponent');
+        const nextTurn = determineTurnForCardPlay();
+        setCurrentTurn(nextTurn);
+        if (nextTurn === 'opponent') {
+          timerRef.current = setTimeout(() => {
+            executeAITurn();
+          }, 1000);
+        }
       }
     } else {
       // IA DIJO NO QUIERO
@@ -456,7 +571,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         setPendingCall(null);
         setCenterBanner(`La PC no quiso el envido. ¡Sumás +${points} pt(s)!`);
         setTimeout(() => setCenterBanner(null), 2500);
-        setCurrentTurn(handMano);
+
+        const nextTurn = determineTurnForCardPlay();
+        setCurrentTurn(nextTurn);
+        if (nextTurn === 'opponent') {
+          timerRef.current = setTimeout(() => {
+            executeAITurn();
+          }, 1200);
+        }
       } else {
         // No quiso el truco: gana el jugador
         const refusedPoints = getTrucoRefusedPoints(trucoLevel);
@@ -496,8 +618,14 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     setPendingCall(null);
     setTimeout(() => setCenterBanner(null), 3500);
 
-    // Luego de resolver envido, el juego continúa normalmente en la primera mano
-    setCurrentTurn(handMano);
+    // Luego de resolver envido, el juego continúa con quien le toque jugar carta
+    const nextTurn = determineTurnForCardPlay();
+    setCurrentTurn(nextTurn);
+    if (nextTurn === 'opponent') {
+      timerRef.current = setTimeout(() => {
+        executeAITurn();
+      }, 1500);
+    }
   };
 
   const calculateAcceptedEnvidoPoints = (chain: string[]): number => {
@@ -535,14 +663,31 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const handlePlayerFlor = () => {
     if (!settings.withFlor || !hasFlor(playerHand)) return;
     sound.playWinFanfare();
-    setPlayerScore(prev => prev + 3);
-    setEnvidoDone(true);
-    setPlayerBubble('¡FLOR!');
-    setCenterBanner('¡Cantaste Flor! (+3 puntos)');
-    setTimeout(() => {
-      setPlayerBubble(null);
-      setCenterBanner(null);
-    }, 3000);
+
+    const hasAIFlor = settings.withFlor && hasFlor(opponentHand);
+
+    if (hasAIFlor) {
+      resolveFlorShowdown('player');
+    } else {
+      const pts = 3;
+      setPlayerScore(prev => prev + pts);
+      setEnvidoDone(true);
+      setPendingCall(null);
+      setPlayerBubble('¡FLOR!');
+      setCenterBanner('¡Cantaste Flor! (+3 puntos)');
+      setTimeout(() => {
+        setPlayerBubble(null);
+        setCenterBanner(null);
+      }, 3000);
+
+      const nextTurn = determineTurnForCardPlay();
+      setCurrentTurn(nextTurn);
+      if (nextTurn === 'opponent') {
+        timerRef.current = setTimeout(() => {
+          executeAITurn();
+        }, 1300);
+      }
+    }
   };
 
   // Consejo en vivo del Mentor
@@ -760,7 +905,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
           <div className="flex gap-1.5 xs:gap-3 sm:gap-4 items-end justify-center">
             {playerHand.map(card => {
               const isSelected = selectedCardId === card.id;
-              const canPlay = currentTurn === 'player' && !pendingCall && !handEnded;
+              const canPlay = currentTurn === 'player' && !pendingCall && !handEnded && !gameWinner && !roundPlayerCard;
               const isRecommended = settings.mentorEnabled && mentorAdvice.recommendedAction?.includes(card.name);
 
               return (
@@ -822,6 +967,16 @@ export const GameBoard: React.FC<GameBoardProps> = ({
               ¡El rival cantó {pendingCall.toUpperCase()}! ¿Qué respondés?
             </span>
             <div className="flex flex-wrap items-center justify-center gap-2 w-full">
+              {/* Si el rival cantó envido y yo tengo Flor, puedo cantar FLOR para anular el envido */}
+              {pendingCall.includes('envido') && settings.withFlor && hasFlor(playerHand) && (
+                <button
+                  onClick={handlePlayerFlor}
+                  className="w-full sm:w-auto min-h-[44px] px-5 py-2 bg-gradient-to-r from-pink-800 to-purple-800 hover:from-pink-700 hover:to-purple-700 text-white font-display font-black rounded-xl text-xs sm:text-sm shadow-xl border border-pink-400/50 transition active:scale-95 touch-manipulation tracking-wider animate-pulse"
+                >
+                  🌸 ¡FLOR! (Anula Envido)
+                </button>
+              )}
+
               <button
                 onClick={() => handlePlayerResponse(true)}
                 className="flex-1 sm:flex-none min-h-[44px] px-5 sm:px-7 py-2 bg-gradient-to-r from-emerald-800 to-emerald-700 hover:from-emerald-700 hover:to-emerald-600 text-[#fbf3df] font-display font-black rounded-xl text-xs sm:text-sm shadow-xl border border-emerald-400/50 transition active:scale-95 touch-manipulation tracking-wider"
@@ -1000,10 +1155,12 @@ export const GameBoard: React.FC<GameBoardProps> = ({
             <h2 className="font-serif font-black text-2xl md:text-3xl text-amber-300">
               {gameWinner === 'player' ? '¡CAMPEÓN DEL TRUCO!' : '¡TE GANÓ LA PC!'}
             </h2>
-            <p className="text-xs text-stone-300 mt-2">
-              {gameWinner === 'player'
-                ? `Alcanzaste los ${settings.targetPoints} puntos primero. ¡Gran demostración de picardía criolla!`
-                : `La computadora llegó a los ${settings.targetPoints} puntos. ¡A levantar cabeza para la revancha!`}
+            <p className="text-xs text-stone-300 mt-2 leading-relaxed">
+              {matchEndReason || (
+                gameWinner === 'player'
+                  ? `Alcanzaste los ${settings.targetPoints} puntos primero. ¡Gran demostración de picardía criolla!`
+                  : `La computadora llegó a los ${settings.targetPoints} puntos. ¡A levantar cabeza para la revancha!`
+              )}
             </p>
 
             <div className="mt-4 p-4 bg-stone-950/80 rounded-2xl border border-stone-800 flex justify-around items-center">
